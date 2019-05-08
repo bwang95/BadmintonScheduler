@@ -1,0 +1,6 @@
+<resources>
+  <string name="app_name">Badminton Scheduler</string>
+  <string name="player_name_header">Player Name</string>
+  <string name="player_password_header">Password</string>
+  <string name="player_court_header">Court</string>
+</resources>
