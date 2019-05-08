@@ -1,14 +1,14 @@
 package com.cerridan.badmintonscheduler.model
 
-import com.google.gson.annotations.SerializedName
-import java.util.*
+import com.squareup.moshi.Json
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 data class Session(
-    @SerializedName("id") val id: Long,
-    @SerializedName("players") val players: List<Player>,
-    @SerializedName("starts_at") val startsAt: Date,
-    @SerializedName("length_minutes") val lengthMins: Long
+    @Json(name = "id") val id: Long,
+    @Json(name = "players") val players: List<Player>,
+    @Json(name = "starts_at") val startsAt: Date,
+    @Json(name = "length_minutes") val lengthMins: Long
 ) {
   val endsAt get() = Date(startsAt.time + TimeUnit.MINUTES.toMillis(lengthMins))
 

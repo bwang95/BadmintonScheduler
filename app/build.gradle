@@ -6,14 +6,16 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
   compileSdkVersion 28
+
   defaultConfig {
     applicationId "com.cerridan.badmintonscheduler"
     minSdkVersion 21
     targetSdkVersion 28
-    versionCode 1
-    versionName "1.0"
+    versionCode major_version * 1000 + minor_version
+    versionName "$major_version.$minor_version"
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
+
   buildTypes {
     release {
       minifyEnabled false
@@ -31,8 +33,13 @@ dependencies {
   implementation 'com.android.support:design:28.0.0'
   implementation 'com.android.support:recyclerview-v7:28.0.0'
 
-  implementation 'com.google.code.gson:gson:2.8.5'
   implementation 'com.google.dagger:dagger:2.15'
+  implementation 'com.squareup.okhttp3:okhttp:3.14.1'
+  implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+  implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+  implementation 'com.squareup.retrofit2:converter-moshi:2.5.0'
+  implementation 'com.squareup.moshi:moshi:1.8.0'
+  implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'
 
   implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
   implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
