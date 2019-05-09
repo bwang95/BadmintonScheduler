@@ -6,27 +6,29 @@ import com.cerridan.badmintonscheduler.api.request.RegisterCourtRequest
 import com.cerridan.badmintonscheduler.api.response.CourtsResponse
 import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.api.response.PlayersResponse
-import io.reactivex.Single
 
 class BadmintonService(private val api: BadmintonAPI) {
   // Courts
-  fun getCourts(): Single<CourtsResponse> = api.getCourts()
+  fun getCourts() = api.getCourts().onErrorReturn(::CourtsResponse)
 
-  fun registerCourt(request: RegisterCourtRequest): Single<GenericResponse> = api.registerCourt(request)
+  fun registerCourt(request: RegisterCourtRequest) =
+      api.registerCourt(request).onErrorReturn(::GenericResponse)
 
-  fun unregisterCourt(request: CourtNumberRequest): Single<GenericResponse> = api.unregisterCourt(request)
+  fun unregisterCourt(request: CourtNumberRequest) =
+      api.unregisterCourt(request).onErrorReturn(::GenericResponse)
 
-  fun resetCourt(request: CourtNumberRequest): Single<GenericResponse> = api.resetCourt(request)
+  fun resetCourt(request: CourtNumberRequest) =
+      api.resetCourt(request).onErrorReturn(::GenericResponse)
 
   // Players
-  fun getPlayers(): Single<PlayersResponse> = api.getPlayers()
+  fun getPlayers() = api.getPlayers().onErrorReturn(::PlayersResponse)
 
-  fun addPlayer(player: Player): Single<GenericResponse> = api.addPlayer(player)
+  fun addPlayer(player: Player) = api.addPlayer(player).onErrorReturn(::GenericResponse)
 
-  fun removePlayer(name: String): Single<GenericResponse> = api.removePlayer(name)
+  fun removePlayer(name: String) = api.removePlayer(name).onErrorReturn(::GenericResponse)
 
   // Session
-  fun startSession(): Single<GenericResponse> = api.startSession()
+  fun startSession() = api.startSession().onErrorReturn(::GenericResponse)
 
-  fun endSession(): Single<GenericResponse> = api.endSession()
+  fun endSession() = api.endSession().onErrorReturn(::GenericResponse)
 }

@@ -1,7 +1,6 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
-import android.support.annotation.CallSuper
 import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -19,20 +18,20 @@ abstract class BaseFragment(@LayoutRes private val layout: Int): Fragment() {
       savedInstanceState: Bundle?
   ): View = inflater.inflate(layout, container, false)
 
-  final override fun onStart() {
-    super.onStart()
-    onStart(checkNotNull(view))
+  final override fun onResume() {
+    super.onResume()
+    onResume(view!!)
   }
 
-  final override fun onStop() {
-    onStop(checkNotNull(view))
+  final override fun onPause() {
+    onPause(view!!)
     disposables.clear()
-    super.onStop()
+    super.onPause()
   }
 
-  protected open fun onStart(view: View) = Unit
+  protected open fun onResume(view: View) = Unit
 
-  protected open fun onStop(view: View) = Unit
+  protected open fun onPause(view: View) = Unit
 
-  protected fun Disposable.disposeOnStop() = disposables.add(this)
+  protected fun Disposable.disposeOnPause() { if (isResumed) disposables.add(this) else dispose() }
 }

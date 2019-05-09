@@ -9,6 +9,8 @@ import com.cerridan.badmintonscheduler.view.PlayerItemView
 class PlayersAdapter(context: Context) : BaseRecyclerViewAdapter(context) {
   private val players = mutableListOf<Player>()
 
+  init { setHasStableIds(true) }
+
   fun setPlayers(players: List<Player>) {
     this.players.clear()
     this.players += players
@@ -21,4 +23,6 @@ class PlayersAdapter(context: Context) : BaseRecyclerViewAdapter(context) {
       (view as PlayerItemView).run { bind(players[position]) }
 
   override fun getItemCount() = players.size
+
+  override fun getItemId(position: Int) = players[position].name.hashCode().toLong()
 }
