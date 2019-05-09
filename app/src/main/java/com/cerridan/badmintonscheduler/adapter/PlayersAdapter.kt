@@ -3,7 +3,7 @@ package com.cerridan.badmintonscheduler.adapter
 import android.content.Context
 import android.view.View
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.model.Player
+import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.view.PlayerItemView
 
 class PlayersAdapter(context: Context) : BaseRecyclerViewAdapter(context) {

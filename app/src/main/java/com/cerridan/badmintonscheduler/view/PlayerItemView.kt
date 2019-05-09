@@ -2,11 +2,10 @@ package com.cerridan.badmintonscheduler.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.model.Player
+import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.util.bindView
 
 class PlayerItemView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
