@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cerridan.badmintonscheduler">
 
+  <uses-permission android:name="android.permission.INTERNET" />
+
   <application
       android:name=".BadmintonApp"
       android:allowBackup="true"

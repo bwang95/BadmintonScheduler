@@ -19,7 +19,7 @@ class PlayersAdapter(context: Context) : BaseRecyclerViewAdapter(context) {
 
   override fun getLayoutForViewType(viewType: Int) = R.layout.item_player
 
-  override fun onViewAttachedToWindow(view: View, position: Int) =
+  override fun onViewAttachedToWindow(holder: ViewHolder, view: View, position: Int) =
       (view as PlayerItemView).run { bind(players[position]) }
 
   override fun getItemCount() = players.size

@@ -42,11 +42,11 @@ abstract class BaseRecyclerViewAdapter(
   }
 
   final override fun onViewAttachedToWindow(holder: ViewHolder) =
-      onViewAttachedToWindow(holder.view, holder.adapterPosition)
+      onViewAttachedToWindow(holder, holder.view, holder.adapterPosition)
 
   @LayoutRes abstract fun getLayoutForViewType(viewType: Int): Int
 
-  abstract fun onViewAttachedToWindow(view: View, position: Int)
+  abstract fun onViewAttachedToWindow(holder: ViewHolder, view: View, position: Int)
 
   protected fun Disposable.disposeOnRecycle(viewholder: ViewHolder): Unit =
       if (!viewholder.view.isAttachedToWindow) dispose()

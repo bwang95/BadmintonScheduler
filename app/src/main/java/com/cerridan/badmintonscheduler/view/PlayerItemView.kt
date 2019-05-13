@@ -22,5 +22,6 @@ class PlayerItemView(context: Context, attrs: AttributeSet) : LinearLayout(conte
   fun bind(player: Player) {
     nameView.text = player.name
     passwordView.text = player.password
+    courtView.text = player.courtNumber?.toString() ?: ""
   }
 }

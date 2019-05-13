@@ -5,37 +5,23 @@
     android:layout_height="match_parent"
     >
   <ViewAnimator
-      android:id="@+id/va_players_animator"
+      android:id="@+id/va_courts_animator"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       >
     <ProgressBar
-        android:id="@+id/pb_players_progress"
+        android:id="@+id/pb_courts_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         />
-    <LinearLayout
-        android:id="@+id/rv_players_content"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_courts_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-      <include
-          layout="@layout/item_player"
-          android:id="@+id/pv_players_header"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          />
-      <android.support.v7.widget.RecyclerView
-          android:id="@+id/rv_players_recycler"
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_weight="1"
-          />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        />
     <LinearLayout
-        android:id="@+id/ll_players_empty"
+        android:id="@+id/ll_courts_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -45,25 +31,24 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/global_padding"
-          android:contentDescription="@string/players_empty"
-          android:src="@drawable/icon_shuttle"
+          android:contentDescription="@string/courts_empty"
+          android:src="@drawable/icon_court"
           />
       <TextView
           android:layout_width="@dimen/empty_state_width"
           android:layout_height="wrap_content"
           android:gravity="center_horizontal"
-          android:text="@string/players_empty"
+          android:text="@string/courts_empty"
           />
     </LinearLayout>
   </ViewAnimator>
   <android.support.design.widget.FloatingActionButton
-      android:id="@+id/fab_players_add"
+      android:id="@+id/fab_courts_register"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|end"
       android:layout_marginBottom="@dimen/global_padding"
       android:layout_marginEnd="@dimen/global_padding"
-      android:scaleType="centerInside"
       android:src="@drawable/icon_add"
       />
 </FrameLayout>
