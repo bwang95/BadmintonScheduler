@@ -3,8 +3,11 @@ Android app for badminton scheduling.
 
 For API and Slackbot backend, see [Plutoniummatt/bb](https://github.com/plutoniummatt/bb)
 
+In order to build the app, you need to define a string called `api_base_url`, which
+is the base URL that Retrofit will use to construct its paths.
+
 ### Working API definition
-```json
+```
 GET courts
 {
     "courts": [
@@ -47,7 +50,8 @@ GET players
     "players": [
         {
             "name": String,
-            "password": String
+            "password": String,
+            "court_number": Int?
         }
     ]
 }
