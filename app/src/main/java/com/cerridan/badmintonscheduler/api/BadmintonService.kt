@@ -22,16 +22,16 @@ class BadmintonService(private val api: BadmintonAPI) {
       .getCourts()
       .handleErrorsOnMainThread(::CourtsResponse)
 
-  fun registerCourt(request: RegisterCourtRequest) = api
-      .registerCourt(request)
+  fun registerCourt(courtNumber: Int, players: List<Player>, delayMinutes: Int) = api
+      .registerCourt(RegisterCourtRequest(courtNumber, players.map(Player::name), delayMinutes, false))
       .handleErrorsOnMainThread(::GenericResponse)
 
-  fun unregisterCourt(request: CourtNumberRequest) = api
-      .unregisterCourt(request)
+  fun unregisterCourt(courtNumber: Int) = api
+      .unregisterCourt(CourtNumberRequest(courtNumber))
       .handleErrorsOnMainThread(::GenericResponse)
 
-  fun resetCourt(request: CourtNumberRequest) = api
-      .resetCourt(request)
+  fun resetCourt(courtNumber: Int) = api
+      .resetCourt(CourtNumberRequest(courtNumber))
       .handleErrorsOnMainThread(::GenericResponse)
 
   // Players

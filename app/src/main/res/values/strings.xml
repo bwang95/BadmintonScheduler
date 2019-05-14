@@ -21,6 +21,16 @@
   <string name="courts_title">Courts</string>
   <string name="players_title">Players</string>
   <string name="drawer_item_content_description">View Icon</string>
+  <string name="court_actions_title">Court Actions</string>
+  <string name="court_actions_message">What would you like to do?</string>
+  <string name="court_actions_remove">Remove First Group</string>
+  <string name="court_actions_reset">Reset Court</string>
+  <string name="court_actions_cancel">Cancel</string>
+  <string name="registration_court_number">Court Number</string>
+  <string name="registration_court_number_hint">000</string>
+  <string name="registration_delay_time">Delay Time (minutes)</string>
+  <string name="registration_register">Register</string>
+  <string name="registration_players_empty">No available players!</string>
 
   <string-array name="zodiac_animals">
     <item>mouse</item>

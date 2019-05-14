@@ -5,14 +5,18 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import android.widget.ViewAnimator
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.adapter.CourtsAdapter
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
+import com.cerridan.badmintonscheduler.dialog.CourtActionsFragment
 import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.displayedChildId
 import com.cerridan.badmintonscheduler.util.push
+import com.cerridan.badmintonscheduler.util.showDialog
 import com.jakewharton.rxbinding2.view.clicks
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -47,11 +51,18 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
         .doOnSuccess {
           animator.displayedChildId = if (it.courts.isNullOrEmpty()) R.id.ll_courts_empty else R.id.rv_courts_recycler
         }
-        .subscribe { response -> response.courts?.let(adapter::setCourts) }
+        .subscribe { response ->
+          response.error?.also { Toast.makeText(view.context, it, LENGTH_LONG).show() }
+          response.courts?.let(adapter::setCourts)
+        }
         .disposeOnPause()
 
     registerButton.clicks()
         .subscribe { push(RegistrationFragment()) }
+        .disposeOnPause()
+
+    adapter.courtClicks
+        .subscribe { showDialog(CourtActionsFragment.create(it)) }
         .disposeOnPause()
   }
 }

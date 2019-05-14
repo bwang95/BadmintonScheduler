@@ -4,8 +4,8 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.OnScrollListener
 import android.view.View
-import android.view.inputmethod.InputMethod.SHOW_FORCED
 import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.ViewAnimator
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -37,6 +37,13 @@ val RecyclerView.observableVerticalScrollOffset
 
 fun View.requestFocusAndShowKeyboard() {
   requestFocus()
+  post {
+    (context.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager)
+        ?.showSoftInput(this, SHOW_IMPLICIT)
+  }
+}
+
+fun View.hideKeyboard() {
   (context.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager)
-      ?.toggleSoftInput(SHOW_FORCED, 0)
+      ?.hideSoftInputFromWindow(windowToken, 0)
 }

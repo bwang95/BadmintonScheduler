@@ -5,11 +5,13 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import android.widget.ViewAnimator
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.adapter.PlayersAdapter
 import com.cerridan.badmintonscheduler.api.BadmintonService
-import com.cerridan.badmintonscheduler.api.dialog.AddPlayerFragment
+import com.cerridan.badmintonscheduler.dialog.AddPlayerFragment
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.displayedChildId
@@ -52,7 +54,10 @@ class PlayersFragment: BaseFragment(R.layout.fragment_players) {
             R.id.rv_players_content
           }
         }
-        .subscribe { response -> response.players?.let(adapter::setPlayers) }
+        .subscribe { response ->
+          response.error?.also { Toast.makeText(view.context, it, LENGTH_LONG).show() }
+          response.players?.let(adapter::setPlayers)
+        }
         .disposeOnPause()
 
     addPlayerButton.clicks()

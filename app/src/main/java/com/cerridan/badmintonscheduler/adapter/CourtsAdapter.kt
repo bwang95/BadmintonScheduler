@@ -10,6 +10,9 @@ import com.cerridan.badmintonscheduler.api.model.Court
 import com.cerridan.badmintonscheduler.api.model.Court.Registration
 import com.cerridan.badmintonscheduler.view.CourtItemView
 import com.cerridan.badmintonscheduler.view.RegistrationItemView
+import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import java.util.Date
 
 class CourtsAdapter(
@@ -23,6 +26,9 @@ class CourtsAdapter(
   }
 
   private val rows = mutableListOf<Row>()
+  private val courtClicksSubject = PublishSubject.create<Int>()
+
+  val courtClicks: Observable<Int> get() = courtClicksSubject
 
   init { setHasStableIds(true) }
 
@@ -45,7 +51,13 @@ class CourtsAdapter(
 
   override fun onViewAttachedToWindow(holder: ViewHolder, view: View, position: Int) {
     when (val row = rows[position]) {
-      is CourtRow -> (view as CourtItemView).bind(row.number, row.expiry)
+      is CourtRow -> (view as CourtItemView).apply {
+        bind(row.number, row.expiry)
+        clicks()
+            .map { row.number }
+            .subscribe(courtClicksSubject::onNext)
+            .disposeOnRecycle(holder)
+      }
       is RegistrationRow -> (view as RegistrationItemView).bind(row.registration, registrationDurationMillis)
     }
   }
