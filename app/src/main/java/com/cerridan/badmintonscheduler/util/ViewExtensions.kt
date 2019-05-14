@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.ViewAnimator
 import io.reactivex.Observable
+import io.reactivex.android.MainThreadDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 
 
@@ -31,7 +32,9 @@ val RecyclerView.observableVerticalScrollOffset
 
     }
     addOnScrollListener(listener)
-    emitter.setCancellable { removeOnScrollListener(listener) }
+    emitter.setDisposable(object : MainThreadDisposable() {
+      override fun onDispose() = removeOnScrollListener(listener)
+    })
   }
   .observeOn(mainThread())
 

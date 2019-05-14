@@ -11,10 +11,11 @@ import android.widget.ViewAnimator
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.adapter.PlayersAdapter
 import com.cerridan.badmintonscheduler.api.BadmintonService
-import com.cerridan.badmintonscheduler.dialog.AddPlayerFragment
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
+import com.cerridan.badmintonscheduler.dialog.AddPlayerFragment
 import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.displayedChildId
+import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.showDialog
 import com.cerridan.badmintonscheduler.view.PlayerItemView
 import com.jakewharton.rxbinding2.view.clicks
@@ -45,9 +46,14 @@ class PlayersFragment: BaseFragment(R.layout.fragment_players) {
   override fun onResume(view: View) {
     super.onResume(view)
 
-    service.getPlayers()
-        .doOnSubscribe { animator.displayedChildId = R.id.pb_players_progress }
-        .doOnSuccess {
+    observableForegroundBackstackState
+        .filter { it }
+        .startWith(true)
+        .switchMapSingle {
+          service.getPlayers()
+              .doOnSubscribe { animator.displayedChildId = R.id.pb_players_progress }
+        }
+        .doOnNext {
           animator.displayedChildId = if (it.players.isNullOrEmpty()) {
             R.id.ll_players_empty
           } else {

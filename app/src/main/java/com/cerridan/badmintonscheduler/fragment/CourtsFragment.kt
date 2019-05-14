@@ -15,6 +15,7 @@ import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.dialog.CourtActionsFragment
 import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.displayedChildId
+import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.push
 import com.cerridan.badmintonscheduler.util.showDialog
 import com.jakewharton.rxbinding2.view.clicks
@@ -46,10 +47,19 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
   override fun onResume(view: View) {
     super.onResume(view)
 
-    service.getCourts()
-        .doOnSubscribe { animator.displayedChildId = R.id.pb_courts_progress }
-        .doOnSuccess {
-          animator.displayedChildId = if (it.courts.isNullOrEmpty()) R.id.ll_courts_empty else R.id.rv_courts_recycler
+    observableForegroundBackstackState
+        .filter { it }
+        .startWith(true)
+        .switchMapSingle {
+          service.getCourts()
+              .doOnSubscribe { animator.displayedChildId = R.id.pb_courts_progress }
+        }
+        .doOnNext {
+          animator.displayedChildId = if (it.courts.isNullOrEmpty()) {
+            R.id.ll_courts_empty
+          } else {
+            R.id.rv_courts_recycler
+          }
         }
         .subscribe { response ->
           response.error?.also { Toast.makeText(view.context, it, LENGTH_LONG).show() }
