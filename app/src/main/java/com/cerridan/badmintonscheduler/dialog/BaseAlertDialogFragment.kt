@@ -39,5 +39,5 @@ abstract class BaseAlertDialogFragment : DialogFragment() {
 
   abstract fun onResume(dialog: AlertDialog)
 
-  protected fun Disposable.disposeOnPause() = disposables.add(this)
+  protected fun Disposable.disposeOnPause() { if (isResumed) disposables.add(this) else dispose() }
 }
