@@ -1,50 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-  <string name="app_name">Badminton Scheduler</string>
-  <string name="player_name_header">Player Name</string>
-  <string name="player_password_header">Password</string>
-  <string name="player_court_header">Court</string>
-  <string name="add_player_hint_name">Name</string>
-  <string name="add_player_hint_password">Password</string>
-  <string name="add_player_add">Add</string>
-  <string name="add_player_cancel">Cancel</string>
-  <string name="add_player_password_error">Must be a zodiac animal</string>
-  <string name="add_player_title">Add Player</string>
-  <string name="add_player_name_error">Name cannot be blank</string>
-  <string name="court_item_number">Court {number}</string>
-  <string name="court_item_time">{minutes} minutes ({time})</string>
-  <string name="registration_time_remaining">{minutes} minutes remaining</string>
-  <string name="registration_starts_at">at {time}</string>
-  <string name="drawer_closed">Drawer Closed</string>
-  <string name="drawer_open">Drawer Open</string>
-  <string name="courts_empty">You don\'t seem to have any courts at the moment.</string>
-  <string name="players_empty">No players here.</string>
-  <string name="courts_title">Courts</string>
-  <string name="players_title">Players</string>
-  <string name="drawer_item_content_description">View Icon</string>
-  <string name="court_actions_title">Court Actions</string>
-  <string name="court_actions_message">What would you like to do?</string>
-  <string name="court_actions_remove">Remove First Group</string>
-  <string name="court_actions_reset">Reset Court</string>
-  <string name="court_actions_cancel">Cancel</string>
-  <string name="registration_court_number">Court Number</string>
-  <string name="registration_court_number_hint">000</string>
-  <string name="registration_delay_time">Delay Time (minutes)</string>
-  <string name="registration_register">Register</string>
-  <string name="registration_players_empty">No available players!</string>
+    <string name="add_player_add">Add</string>
+    <string name="add_player_cancel">Cancel</string>
+    <string name="add_player_hint_name">Name</string>
+    <string name="add_player_hint_password">Password</string>
+    <string name="add_player_name_error">Name cannot be blank</string>
+    <string name="add_player_password_error">Must be a zodiac animal</string>
+    <string name="add_player_title">Add Player</string>
+    <string name="app_name">Badminton Scheduler</string>
+    <string name="court_actions_cancel">Cancel</string>
+    <string name="court_actions_message">What would you like to do?</string>
+    <string name="court_actions_remove">Remove First Group</string>
+    <string name="court_actions_reset">Reset Court</string>
+    <string name="court_actions_title">Court Actions</string>
+    <string name="court_item_number">Court {number}</string>
+    <string name="court_item_time">{minutes} minutes ({time})</string>
+    <string name="courts_empty">You don\'t seem to have any courts at the moment.</string>
+    <string name="courts_title">Courts</string>
+    <string name="drawer_closed">Drawer Closed</string>
+    <string name="drawer_item_content_description">View Icon</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="player_court_header">Court</string>
+    <string name="player_name_header">Player Name</string>
+    <string name="player_password_header">Password</string>
+    <string name="players_empty">No players here.</string>
+    <string name="players_title">Players</string>
+    <string name="registration_court_number">Court Number</string>
+    <string name="registration_court_number_error">Court Number cannot be blank</string>
+    <string name="registration_court_number_hint">000</string>
+    <string name="registration_delay_time">Delay Time (minutes)</string>
+    <string name="registration_players_empty">No available players!</string>
+    <string name="registration_players_error">You must select at least one player.</string>
+    <string name="registration_register">Register</string>
+    <string name="registration_starts_at">at {time}</string>
+    <string name="registration_time_remaining">{minutes} minutes remaining</string>
 
-  <string-array name="zodiac_animals">
-    <item>mouse</item>
-    <item>ox</item>
-    <item>tiger</item>
-    <item>rabbit</item>
-    <item>dragon</item>
-    <item>snake</item>
-    <item>horse</item>
-    <item>goat</item>
-    <item>monkey</item>
-    <item>rooster</item>
-    <item>dog</item>
-    <item>pig</item>
-    <item>cat</item>
-  </string-array>
+    <string-array name="zodiac_animals">
+        <item>cat</item>
+        <item>dog</item>
+        <item>dragon</item>
+        <item>goat</item>
+        <item>horse</item>
+        <item>monkey</item>
+        <item>mouse</item>
+        <item>ox</item>
+        <item>pig</item>
+        <item>rabbit</item>
+        <item>rooster</item>
+        <item>snake</item>
+        <item>tiger</item>
+    </string-array>
 </resources>

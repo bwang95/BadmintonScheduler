@@ -9,12 +9,31 @@ import com.cerridan.badmintonscheduler.api.response.PlayersResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers.io
+import retrofit2.HttpException
+import retrofit2.Retrofit
+import java.io.IOException
 
-class BadmintonService(private val api: BadmintonAPI) {
+class BadmintonService(
+    private val retrofit: Retrofit,
+    private val api: BadmintonAPI
+) {
   private fun <T> Single<T>.handleErrorsOnMainThread(onErrorReturn: (Throwable) -> T): Single<T> =
       this
           .subscribeOn(io())
-          .onErrorReturn(onErrorReturn)
+          .onErrorReturn { throwable ->
+            val converter = retrofit.responseBodyConverter<GenericResponse>(GenericResponse::class.java, arrayOf())
+            val transmuted = try {
+              (throwable as? HttpException)
+                  ?.response()
+                  ?.errorBody()
+                  ?.let { converter.convert(it)?.error?.let(::Exception) }
+                  ?: throwable
+            } catch (e: IOException) {
+              throwable
+            }
+
+            onErrorReturn(transmuted)
+          }
           .observeOn(mainThread())
 
   // Courts

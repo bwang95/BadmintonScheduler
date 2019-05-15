@@ -5,7 +5,7 @@ import java.util.Date
 
 data class Court(
     @Json(name = "court_number") val number: Int,
-    @Json(name = "registrations") val registrations: List<Registration>
+    @Json(name = "reservations") val registrations: List<Registration>
 ) {
   data class Registration(
       @Json(name = "start_time_seconds") val startTime: Date,

@@ -3,17 +3,17 @@ package com.cerridan.badmintonscheduler.adapter
 import android.content.Context
 import android.view.View
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragment
+import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor
 import com.cerridan.badmintonscheduler.view.DrawerItemView
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
 class DrawerAdapter(context: Context) : BaseRecyclerViewAdapter(context) {
-  private val rows = DrawerNavigableFragment.values()
-  private val fragmentClicksSubject = PublishSubject.create<DrawerNavigableFragment>()
+  private val rows = DrawerNavigableFragmentDescriptor.values()
+  private val fragmentClicksSubject = PublishSubject.create<DrawerNavigableFragmentDescriptor>()
 
-  val fragmentClicks: Observable<DrawerNavigableFragment> get() = fragmentClicksSubject
+  val fragmentDescriptorClicks: Observable<DrawerNavigableFragmentDescriptor> get() = fragmentClicksSubject
 
   override fun getLayoutForViewType(viewType: Int) = R.layout.item_drawer
 

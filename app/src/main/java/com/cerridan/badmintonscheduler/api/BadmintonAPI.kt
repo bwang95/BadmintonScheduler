@@ -15,32 +15,32 @@ import retrofit2.http.Path
 
 interface BadmintonAPI {
   // Courts
-  @GET("courts")
+  @GET("court")
   fun getCourts(): Single<CourtsResponse>
 
-  @POST("courts/register")
+  @POST("court/register")
   fun registerCourt(@Body request: RegisterCourtRequest): Single<GenericResponse>
 
-  @POST("courts/unregister")
+  @POST("court/unregister")
   fun unregisterCourt(@Body request: CourtNumberRequest): Single<GenericResponse>
 
-  @POST("courts/reset")
+  @POST("court/reset")
   fun resetCourt(@Body request: CourtNumberRequest): Single<GenericResponse>
 
   // Players
-  @GET("players")
+  @GET("player")
   fun getPlayers(): Single<PlayersResponse>
 
-  @POST("players")
+  @POST("player")
   fun addPlayer(@Body request: Player): Single<GenericResponse>
 
-  @DELETE("players/{name}")
+  @DELETE("player/{name}")
   fun removePlayer(@Path("name") name: String): Single<GenericResponse>
 
   // Session
-  @POST("sessions")
+  @POST("session")
   fun startSession(): Single<GenericResponse>
 
-  @DELETE("sessions")
+  @DELETE("session")
   fun endSession(): Single<GenericResponse>
 }

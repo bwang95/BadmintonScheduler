@@ -1,6 +1,8 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.DividerItemDecoration.VERTICAL
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -8,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import android.widget.Toast.LENGTH_SHORT
 import android.widget.ViewAnimator
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.adapter.SelectablePlayersAdapter
@@ -17,6 +20,7 @@ import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.displayedChildId
 import com.cerridan.badmintonscheduler.util.requestFocusAndShowKeyboard
 import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Single
 import javax.inject.Inject
 
 class RegistrationFragment : BaseFragment(R.layout.fragment_registration) {
@@ -36,6 +40,7 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration) {
     super.onViewCreated(view, savedInstanceState)
 
     adapter = SelectablePlayersAdapter(view.context)
+    playersRecycler.addItemDecoration(DividerItemDecoration(view.context, VERTICAL))
     playersRecycler.layoutManager = LinearLayoutManager(view.context)
     playersRecycler.adapter = adapter
   }
@@ -65,12 +70,22 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration) {
 
     submitButton.clicks()
         .switchMapSingle {
-          service.registerCourt(
-              courtNumber = courtNumberView.text.toString().toInt(),
-              players = adapter.selectedPlayers,
-              delayMinutes = if (delayTimeView.text.isBlank()) 0 else delayTimeView.text.toString().toInt()
-          )
-          .doOnSubscribe { /* TODO loading state */ }
+          when {
+            courtNumberView.text.isNullOrBlank() -> {
+              courtNumberView.error = resources.getString(R.string.registration_court_number_error)
+              Single.never()
+            }
+            adapter.selectedPlayers.isEmpty() -> {
+              Toast.makeText(view.context, R.string.registration_players_error, LENGTH_SHORT).show()
+              Single.never()
+            }
+            else -> service.registerCourt(
+                courtNumber = courtNumberView.text.toString().toInt(),
+                players = adapter.selectedPlayers,
+                delayMinutes = if (delayTimeView.text.isBlank()) 0 else delayTimeView.text.toString().toInt()
+            )
+            .doOnSubscribe { /* TODO loading state */ }
+          }
         }
         .subscribe { response ->
           response.error

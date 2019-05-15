@@ -1,16 +1,19 @@
 <resources>
-
   <!-- Base application theme. -->
   <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-    <item name="colorPrimary">@color/primary_color</item>
-    <item name="colorPrimaryDark">@color/primary_color_dark</item>
-    <item name="colorAccent">@color/accent_color</item>
-    <item name="colorControlNormal">@android:color/white</item>
+    <item name="colorAccent">@color/green_a700</item>
+    <item name="colorPrimary">@color/indigo_500</item>
+    <item name="colorPrimaryDark">@color/indigo_700</item>
+    <item name="drawerArrowStyle">@style/Widget.BadmintonScheduler.DrawerArrow</item>
   </style>
 
   <style name="Widget.BadmintonScheduler.Divider" parent="android:Widget">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">@dimen/divider_height</item>
-    <item name="android:background">@color/light_gray</item>
+    <item name="android:background">@color/gray_300</item>
+  </style>
+
+  <style name="Widget.BadmintonScheduler.DrawerArrow" parent="Widget.AppCompat.DrawerArrowToggle">
+    <item name="color">@android:color/white</item>
   </style>
 </resources>

@@ -46,6 +46,6 @@ class AppModule(private val app: Application) {
   @Provides @Singleton fun provideBadmintonApi(retrofit: Retrofit) =
       retrofit.create(BadmintonAPI::class.java)
 
-  @Provides @Singleton fun provideBadmintonService(api: BadmintonAPI) =
-      BadmintonService(api)
+  @Provides @Singleton fun provideBadmintonService(retrofit: Retrofit, api: BadmintonAPI) =
+      BadmintonService(retrofit, api)
 }

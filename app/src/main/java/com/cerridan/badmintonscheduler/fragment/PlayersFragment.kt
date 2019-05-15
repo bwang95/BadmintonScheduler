@@ -2,6 +2,8 @@ package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.DividerItemDecoration.VERTICAL
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -36,9 +38,11 @@ class PlayersFragment: BaseFragment(R.layout.fragment_players) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
+    headerView.elevation = view.resources.getDimensionPixelSize(R.dimen.global_elevation).toFloat()
     headerView.bindAsHeader()
 
     adapter = PlayersAdapter(view.context)
+    playersRecycler.addItemDecoration(DividerItemDecoration(view.context, VERTICAL))
     playersRecycler.layoutManager = LinearLayoutManager(view.context)
     playersRecycler.adapter = adapter
   }

@@ -14,7 +14,7 @@
       android:id="@+id/cb_player_selectable_checkbox"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/global_padding_half"
+      android:layout_marginEnd="@dimen/global_padding"
       android:clickable="false"
       android:focusable="false"
       />

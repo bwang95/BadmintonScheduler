@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <dimen name="divider_height">1px</dimen>
-  <dimen name="global_elevation">4dp</dimen>
-  <dimen name="global_padding">16dp</dimen>
-  <dimen name="global_padding_quarter">4dp</dimen>
   <dimen name="drawer_width">256dp</dimen>
   <dimen name="empty_state_width">384dp</dimen>
+  <dimen name="global_elevation">4dp</dimen>
+  <dimen name="global_padding">16dp</dimen>
   <dimen name="global_padding_half">8dp</dimen>
+  <dimen name="global_padding_quarter">4dp</dimen>
 </resources>

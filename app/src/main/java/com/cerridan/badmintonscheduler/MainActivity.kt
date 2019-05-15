@@ -9,8 +9,8 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import com.cerridan.badmintonscheduler.adapter.DrawerAdapter
 import com.cerridan.badmintonscheduler.fragment.CourtsFragment
-import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragment.COURTS
-import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragment.PLAYERS
+import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor.COURTS
+import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor.PLAYERS
 import com.cerridan.badmintonscheduler.fragment.PlayersFragment
 import com.cerridan.badmintonscheduler.util.bindView
 import io.reactivex.disposables.CompositeDisposable
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
   override fun onResume() {
     super.onResume()
 
-    adapter.fragmentClicks
+    adapter.fragmentDescriptorClicks
         .map {
           when (it) {
             COURTS -> CourtsFragment()
