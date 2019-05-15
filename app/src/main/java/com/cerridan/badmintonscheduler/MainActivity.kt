@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
           when (it) {
             COURTS -> CourtsFragment()
             PLAYERS -> PlayersFragment()
-            null -> throw IllegalArgumentException("Missing Fragment type")
           }
         }
         .doOnNext { drawerLayout.closeDrawer(drawer) }
