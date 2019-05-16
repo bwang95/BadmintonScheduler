@@ -1,7 +1,8 @@
 # Badminton Scheduler
 Android app for badminton scheduling.
 
-For API and Slackbot backend, see [Plutoniummatt/bb](https://github.com/plutoniummatt/bb)
+For Slackbot backend, see [Plutoniummatt/bb](https://github.com/plutoniummatt/bb)
+For API backend, see [Haloyum/bab-server](https://github.com/Haloyum/bab-server)
 
 In order to build the app, you need to define a string called `api_base_url`, which
 is the base URL that Retrofit will use to construct its paths.
@@ -10,35 +11,33 @@ is the base URL that Retrofit will use to construct its paths.
 ```
 GET courts
 {
-    "courts": [
-        {
-            "court_number": Int,
-            "registrations": [
-                {
-                    "start_time_seconds": Long,
-                    "names": [String]
-                }
-            ]
-        }
-    ]
+  "reservations": [
+    {
+      "token": String,
+      "courtNumber": Int,
+      "playerNames": [String],
+      "startAt": Date,
+      "randoms": Boolean
+    }
+  ]
 }
 
 POST courts/register
 {
-    "court_number": Int,
-    "names": [String],
-    "delay_time_minutes": Int,
-    "randoms": Boolean
+  "courtNumber": Int,
+  "players": [String],
+  "delayInMinutes": Int,
+  "randoms": Boolean
 }
 
 POST courts/unregister
 {
-    "court_number": Int
+  "token": String
 }
 
 POST courts/reset
 {
-    "court_number": Int
+  "courtNumber": Int
 }
 
 ///////////////////////////////////////
@@ -47,22 +46,25 @@ POST courts/reset
 
 GET players
 {
-    "players": [
-        {
-            "name": String,
-            "password": String,
-            "court_number": Int?
-        }
-    ]
+  "players": [
+    {
+      "name": String,
+      "password": String,
+      "courtNumber": Int?
+    }
+  ]
 }
 
 POST players
 {
-    "name": String,
-    "password": String
+  "name": String,
+  "password": String
 }
 
-DELETE players/{name}
+DELETE players
+{
+  "name": String
+}
 
 ///////////////////////////////////////
 //  Session-related endpoints        //
