@@ -4,7 +4,7 @@ import com.cerridan.badmintonscheduler.dialog.AddPlayerFragment
 import com.cerridan.badmintonscheduler.dialog.CourtActionsFragment
 import com.cerridan.badmintonscheduler.fragment.CourtsFragment
 import com.cerridan.badmintonscheduler.fragment.PlayersFragment
-import com.cerridan.badmintonscheduler.fragment.RegistrationFragment
+import com.cerridan.badmintonscheduler.fragment.ReservationFragment
 import dagger.Component
 import javax.inject.Singleton
 
@@ -15,5 +15,5 @@ interface AppComponent {
   fun inject(courtActionsFragment: CourtActionsFragment)
   fun inject(courtsFragment: CourtsFragment)
   fun inject(playersFragment: PlayersFragment)
-  fun inject(registrationFragment: RegistrationFragment)
+  fun inject(reservationFragment: ReservationFragment)
 }

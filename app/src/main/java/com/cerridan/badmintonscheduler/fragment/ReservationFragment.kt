@@ -23,12 +23,12 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Single
 import javax.inject.Inject
 
-class RegistrationFragment : BaseFragment(R.layout.fragment_registration) {
-  private val courtNumberView: EditText by bindView(R.id.et_registration_court_number)
-  private val delayTimeView: EditText by bindView(R.id.et_registration_delay_time)
-  private val playersAnimator: ViewAnimator by bindView(R.id.va_registration_players_animator)
-  private val playersRecycler: RecyclerView by bindView(R.id.rv_registration_players_recycler)
-  private val submitButton: Button by bindView(R.id.b_registration_submit)
+class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
+  private val courtNumberView: EditText by bindView(R.id.et_reservation_court_number)
+  private val delayTimeView: EditText by bindView(R.id.et_reservation_delay_time)
+  private val playersAnimator: ViewAnimator by bindView(R.id.va_reservation_players_animator)
+  private val playersRecycler: RecyclerView by bindView(R.id.rv_reservation_players_recycler)
+  private val submitButton: Button by bindView(R.id.b_reservation_submit)
 
   private lateinit var adapter: SelectablePlayersAdapter
 
@@ -51,15 +51,15 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration) {
     courtNumberView.requestFocusAndShowKeyboard()
 
     service.getPlayers()
-        .doOnSubscribe { playersAnimator.displayedChildId = R.id.pb_registration_players }
+        .doOnSubscribe { playersAnimator.displayedChildId = R.id.pb_reservation_players }
         .map { response ->
           response.error to (response.players?.filter { it.courtNumber == null } ?: emptyList())
         }
         .doOnSuccess { (_, players) ->
           playersAnimator.displayedChildId = if (players.isNullOrEmpty()) {
-            R.id.ll_registration_empty
+            R.id.ll_reservation_empty
           } else {
-            R.id.rv_registration_players_recycler
+            R.id.rv_reservation_players_recycler
           }
         }
         .subscribe { (error, players) ->
@@ -72,11 +72,11 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration) {
         .switchMapSingle {
           when {
             courtNumberView.text.isNullOrBlank() -> {
-              courtNumberView.error = resources.getString(R.string.registration_court_number_error)
+              courtNumberView.error = resources.getString(R.string.reservation_court_number_error)
               Single.never()
             }
             adapter.selectedPlayers.isEmpty() -> {
-              Toast.makeText(view.context, R.string.registration_players_error, LENGTH_SHORT).show()
+              Toast.makeText(view.context, R.string.reservation_players_error, LENGTH_SHORT).show()
               Single.never()
             }
             else -> service.registerCourt(

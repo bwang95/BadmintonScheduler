@@ -2,7 +2,9 @@ package com.cerridan.badmintonscheduler.api
 
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.api.request.CourtNumberRequest
+import com.cerridan.badmintonscheduler.api.request.DeletePlayerRequest
 import com.cerridan.badmintonscheduler.api.request.RegisterCourtRequest
+import com.cerridan.badmintonscheduler.api.request.UnregisterCourtRequest
 import com.cerridan.badmintonscheduler.api.response.CourtsResponse
 import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.api.response.PlayersResponse
@@ -45,8 +47,8 @@ class BadmintonService(
       .registerCourt(RegisterCourtRequest(courtNumber, players.map(Player::name), delayMinutes, false))
       .handleErrorsOnMainThread(::GenericResponse)
 
-  fun unregisterCourt(courtNumber: Int) = api
-      .unregisterCourt(CourtNumberRequest(courtNumber))
+  fun unregisterCourt(reservationToken: String) = api
+      .unregisterCourt(UnregisterCourtRequest(reservationToken))
       .handleErrorsOnMainThread(::GenericResponse)
 
   fun resetCourt(courtNumber: Int) = api
@@ -63,12 +65,12 @@ class BadmintonService(
       .handleErrorsOnMainThread(::GenericResponse)
 
   fun removePlayer(name: String) = api
-      .removePlayer(name)
+      .removePlayer(DeletePlayerRequest(name))
       .handleErrorsOnMainThread(::GenericResponse)
 
   // Session
   fun startSession() = api
-      .startSession()
+      .startSession(Any())
       .handleErrorsOnMainThread(::GenericResponse)
 
   fun endSession() = api

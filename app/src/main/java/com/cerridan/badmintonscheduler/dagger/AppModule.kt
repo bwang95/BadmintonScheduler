@@ -8,6 +8,7 @@ import com.cerridan.badmintonscheduler.api.BadmintonAPI
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.api.UnixDateAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -24,6 +25,7 @@ import javax.inject.Singleton
 class AppModule(private val app: Application) {
   @Provides @Singleton fun provideMoshi() =
       Moshi.Builder()
+          .add(KotlinJsonAdapterFactory())
           .add(Date::class.java, UnixDateAdapter())
           .build()
 

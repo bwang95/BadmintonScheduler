@@ -13,9 +13,15 @@ import javax.inject.Inject
 class CourtActionsFragment : BaseAlertDialogFragment() {
   companion object {
     private const val KEY_COURT_NUMBER = "dialog.CourtActionsFragment/court_number"
+    private const val KEY_RESERVATION_TOKEN = "dialog.CourtActionsFragment/reservation_token"
 
-    fun create(courtNumber: Int) = CourtActionsFragment()
-        .apply { arguments = Bundle().apply { putInt(KEY_COURT_NUMBER, courtNumber) } }
+    fun create(courtNumber: Int, reservationToken: String) = CourtActionsFragment()
+        .apply {
+          arguments = Bundle().apply {
+            putInt(KEY_COURT_NUMBER, courtNumber)
+            putString(KEY_RESERVATION_TOKEN, reservationToken)
+          }
+        }
   }
 
   @Inject lateinit var service: BadmintonService
@@ -36,11 +42,12 @@ class CourtActionsFragment : BaseAlertDialogFragment() {
 
   override fun onResume(dialog: AlertDialog) {
     val courtNumber = arguments!!.getInt(KEY_COURT_NUMBER)
+    val reservationToken = arguments!!.getString(KEY_RESERVATION_TOKEN) ?: ""
 
     positiveButtonClicks
         .filter { isCancelable }
         .switchMapSingle {
-          service.unregisterCourt(courtNumber)
+          service.unregisterCourt(reservationToken)
               .doOnSubscribe { isCancelable = false }
         }
         .subscribe { response ->

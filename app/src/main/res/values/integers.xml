@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <integer name="court_registration_minutes">45</integer>
+  <integer name="court_reservation_minutes">45</integer>
 </resources>

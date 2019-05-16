@@ -36,10 +36,10 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    val registrationDurationMillis = TimeUnit.MINUTES.toMillis(
-        view.resources.getInteger(R.integer.court_registration_minutes).toLong()
+    val reservationDurationMillis = TimeUnit.MINUTES.toMillis(
+        view.resources.getInteger(R.integer.court_reservation_minutes).toLong()
     )
-    adapter = CourtsAdapter(view.context, registrationDurationMillis)
+    adapter = CourtsAdapter(view.context, reservationDurationMillis)
     courtsRecycler.layoutManager = LinearLayoutManager(view.context)
     courtsRecycler.adapter = adapter
   }
@@ -63,16 +63,18 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
         }
         .subscribe { response ->
           response.error?.also { Toast.makeText(view.context, it, LENGTH_LONG).show() }
-          response.courts?.let(adapter::setCourts)
+          response.courts?.let(adapter::setReservations)
         }
         .disposeOnPause()
 
     registerButton.clicks()
-        .subscribe { push(RegistrationFragment()) }
+        .subscribe { push(ReservationFragment()) }
         .disposeOnPause()
 
     adapter.courtClicks
-        .subscribe { showDialog(CourtActionsFragment.create(it)) }
+        .subscribe { (number, reservationToken) ->
+          showDialog(CourtActionsFragment.create(number, reservationToken))
+        }
         .disposeOnPause()
   }
 }

@@ -5,11 +5,10 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.adapter.CourtsAdapter.Row.CourtRow
-import com.cerridan.badmintonscheduler.adapter.CourtsAdapter.Row.RegistrationRow
-import com.cerridan.badmintonscheduler.api.model.Court
-import com.cerridan.badmintonscheduler.api.model.Court.Registration
+import com.cerridan.badmintonscheduler.adapter.CourtsAdapter.Row.ReservationRow
+import com.cerridan.badmintonscheduler.api.model.Reservation
 import com.cerridan.badmintonscheduler.view.CourtItemView
-import com.cerridan.badmintonscheduler.view.RegistrationItemView
+import com.cerridan.badmintonscheduler.view.ReservationItemView
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -17,33 +16,36 @@ import java.util.Date
 
 class CourtsAdapter(
     context: Context,
-    private val registrationDurationMillis: Long
+    private val reservationDurationMillis: Long
 ) : BaseRecyclerViewAdapter(context) {
   sealed class Row(@LayoutRes val layout: Int) {
-    class CourtRow(val number: Int, val expiry: Date) : Row(R.layout.item_court)
+    class CourtRow(
+        val number: Int,
+        val firstReservationToken: String,
+        val expiry: Date
+    ) : Row(R.layout.item_court)
 
-    class RegistrationRow(val registration: Registration) : Row(R.layout.item_registration)
+    class ReservationRow(val reservation: Reservation) : Row(R.layout.item_reservation)
   }
 
   private val rows = mutableListOf<Row>()
-  private val courtClicksSubject = PublishSubject.create<Int>()
+  private val courtClicksSubject = PublishSubject.create<Pair<Int, String>>()
 
-  val courtClicks: Observable<Int> get() = courtClicksSubject
+  val courtClicks: Observable<Pair<Int, String>> get() = courtClicksSubject
 
   init { setHasStableIds(true) }
 
-  fun setCourts(courts: List<Court>) {
+  fun setReservations(reservations: List<Reservation>) {
     rows.clear()
-    courts.forEach { (number, registrations) ->
-      val expiry = registrations.maxBy(Registration::startTime)
-          ?.startTime
-          ?.time
-          ?.let { Date(it + registrationDurationMillis) }
-          ?: Date()
-
-      rows += CourtRow(number, expiry)
-      rows += registrations.map(::RegistrationRow)
-    }
+    reservations
+        .sortedBy(Reservation::startsAt)
+        .groupBy(Reservation::courtNumber)
+        .toSortedMap()
+        .forEach { (number, reservations) ->
+          val expiry = Date(reservations.last().startsAt.time + reservationDurationMillis)
+          rows += CourtRow(number, reservations.first().token, expiry)
+          rows += reservations.map(::ReservationRow)
+        }
     notifyDataSetChanged()
   }
 
@@ -54,17 +56,17 @@ class CourtsAdapter(
       is CourtRow -> (view as CourtItemView).apply {
         bind(row.number, row.expiry)
         clicks()
-            .map { row.number }
+            .map { row.number to row.firstReservationToken }
             .subscribe(courtClicksSubject::onNext)
             .disposeOnRecycle(holder)
       }
-      is RegistrationRow -> (view as RegistrationItemView).bind(row.registration, registrationDurationMillis)
+      is ReservationRow -> (view as ReservationItemView).bind(row.reservation, reservationDurationMillis)
     }
   }
 
   override fun getItemId(position: Int) = when (val row = rows[position]) {
     is CourtRow -> row.number.toLong()
-    is RegistrationRow -> row.registration.players.sumBy(String::hashCode).toLong()
+    is ReservationRow -> row.reservation.token.hashCode().toLong()
   }
 
   override fun getItemViewType(position: Int) = rows[position].layout
