@@ -14,12 +14,14 @@ class PlayerItemView(context: Context, attrs: AttributeSet) : LinearLayout(conte
   private val courtView: TextView by bindView(R.id.tv_player_court)
 
   fun bindAsHeader() {
+    isEnabled = false
     nameView.setText(R.string.player_name_header)
     passwordView.setText(R.string.player_password_header)
     courtView.setText(R.string.player_court_header)
   }
 
   fun bind(player: Player) {
+    isEnabled = true
     nameView.text = player.name
     passwordView.text = player.password
     courtView.text = player.courtNumber?.toString() ?: ""

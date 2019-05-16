@@ -15,6 +15,7 @@ import com.cerridan.badmintonscheduler.adapter.PlayersAdapter
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.dialog.AddPlayerFragment
+import com.cerridan.badmintonscheduler.dialog.RemovePlayerFragment
 import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.displayedChildId
 import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
@@ -72,6 +73,10 @@ class PlayersFragment: BaseFragment(R.layout.fragment_players) {
 
     addPlayerButton.clicks()
         .subscribe { showDialog(AddPlayerFragment()) }
+        .disposeOnPause()
+
+    adapter.playerLongPresses
+        .subscribe { showDialog(RemovePlayerFragment.create(it.name)) }
         .disposeOnPause()
   }
 }

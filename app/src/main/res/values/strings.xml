@@ -25,6 +25,10 @@
   <string name="player_password_header">Password</string>
   <string name="players_empty">No players here.</string>
   <string name="players_title">Players</string>
+  <string name="remove_player_cancel">Cancel</string>
+  <string name="remove_player_confirm">Remove</string>
+  <string name="remove_player_message">Remove player {player}?</string>
+  <string name="remove_player_title">Remove Player</string>
   <string name="reservation_court_number">Court Number</string>
   <string name="reservation_court_number_error">Court Number cannot be blank</string>
   <string name="reservation_court_number_hint">000</string>
