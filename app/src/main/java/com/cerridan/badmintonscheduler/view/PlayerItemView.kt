@@ -1,6 +1,7 @@
 package com.cerridan.badmintonscheduler.view
 
 import android.content.Context
+import android.support.v4.content.res.ResourcesCompat.getColor
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -15,6 +16,7 @@ class PlayerItemView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
   fun bindAsHeader() {
     isEnabled = false
+    setBackgroundColor(getColor(resources, android.R.color.white, null))
     nameView.setText(R.string.player_name_header)
     passwordView.setText(R.string.player_password_header)
     courtView.setText(R.string.player_court_header)

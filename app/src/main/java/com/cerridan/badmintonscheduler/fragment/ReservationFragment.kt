@@ -18,9 +18,11 @@ import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.displayedChildId
+import com.cerridan.badmintonscheduler.util.hideKeyboard
 import com.cerridan.badmintonscheduler.util.requestFocusAndShowKeyboard
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Single
+import io.reactivex.disposables.Disposables
 import javax.inject.Inject
 
 class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
@@ -49,6 +51,9 @@ class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
     super.onResume(view)
 
     courtNumberView.requestFocusAndShowKeyboard()
+
+    Disposables.fromAction { courtNumberView.hideKeyboard() }
+        .disposeOnPause()
 
     service.getPlayers()
         .doOnSubscribe { playersAnimator.displayedChildId = R.id.pb_reservation_players }

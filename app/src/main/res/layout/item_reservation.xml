@@ -17,7 +17,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
-      android:layout_marginEnd="@dimen/global_padding"
+      android:layout_margin="@dimen/global_padding"
       android:layout_toStartOf="@+id/tv_reservation_time"
       tools:text="Name1, Name2"
       />
@@ -27,7 +27,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
-      android:layout_marginEnd="@dimen/global_padding_quarter"
+      android:layout_marginEnd="@dimen/global_padding"
       tools:text="at 7:15 PM"
       />
 </com.cerridan.badmintonscheduler.view.ReservationItemView>

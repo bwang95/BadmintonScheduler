@@ -24,18 +24,17 @@ class RemovePlayerFragment : BaseAlertDialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(context!!)
       .setTitle(R.string.remove_player_title)
+      .setMessage(
+          Phrase.from(context, R.string.remove_player_message)
+              .put("player", arguments?.getString(KEY_PLAYER_NAME)!!)
+              .format()
+      )
       .setPositiveButton(R.string.remove_player_confirm, null)
       .setNegativeButton(R.string.remove_player_cancel, null)
       .create()
 
   override fun onResume(dialog: AlertDialog) {
     val playerName = arguments?.getString(KEY_PLAYER_NAME)!!
-
-    dialog.setMessage(
-        Phrase.from(dialog.context, R.string.remove_player_message)
-            .put("player", playerName)
-            .format()
-    )
 
     positiveButtonClicks
         .filter { isCancelable }

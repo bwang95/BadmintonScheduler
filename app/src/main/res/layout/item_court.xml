@@ -15,8 +15,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="start|center_vertical"
-      android:layout_marginEnd="@dimen/global_padding"
-      android:padding="@dimen/global_padding_quarter"
+      android:padding="@dimen/global_padding_half"
       android:textAppearance="@style/TextAppearance.AppCompat.Large"
       tools:text="Court 25"
       />
@@ -25,7 +24,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="end|center_vertical"
-      android:padding="@dimen/global_padding_quarter"
+      android:padding="@dimen/global_padding"
       tools:text="65 minutes (8:00 PM)"
       />
 </com.cerridan.badmintonscheduler.view.CourtItemView>

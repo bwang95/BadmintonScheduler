@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit
 
 class UnixDateAdapter : JsonAdapter<Date>() {
   override fun fromJson(reader: JsonReader) =
-      Date().apply { time = TimeUnit.SECONDS.toMillis(reader.nextLong()) }
+      Date().apply { time = reader.nextLong() }
 
   override fun toJson(writer: JsonWriter, value: Date?) {
-    value?.also { writer.value(TimeUnit.MILLISECONDS.toSeconds(it.time)) } ?: writer.nullValue()
+    value?.also { writer.value(it.time) } ?: writer.nullValue()
   }
 }

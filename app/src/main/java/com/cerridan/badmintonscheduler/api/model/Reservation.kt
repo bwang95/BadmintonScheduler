@@ -6,7 +6,7 @@ import java.util.Date
 class Reservation(
     @Json(name = "token") val token: String,
     @Json(name = "courtNumber") val courtNumber: Int,
-    @Json(name = "playerNames") val playerNames: List<String>,
+    @Json(name = "players") val playerNames: List<String>,
     @Json(name = "startAt") val startsAt: Date,
     @Json(name = "randoms") val randoms: Boolean
 )

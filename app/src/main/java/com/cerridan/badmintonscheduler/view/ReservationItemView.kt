@@ -29,7 +29,7 @@ class ReservationItemView(
     }
     timeView.text = if (reservation.startsAt.before(now)) {
       val minutes = TimeUnit.MILLISECONDS.toMinutes(
-          now.time - reservation.startsAt.time + durationMillis
+          reservation.startsAt.time + durationMillis - now.time
       )
       Phrase.from(this, R.string.reservation_time_remaining)
           .put("minutes", minutes.toInt())

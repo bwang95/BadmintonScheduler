@@ -1,7 +1,9 @@
 # Badminton Scheduler
+
 Android app for badminton scheduling.
 
 For Slackbot backend, see [Plutoniummatt/bb](https://github.com/plutoniummatt/bb)
+
 For API backend, see [Haloyum/bab-server](https://github.com/Haloyum/bab-server)
 
 In order to build the app, you need to define a string called `api_base_url`, which

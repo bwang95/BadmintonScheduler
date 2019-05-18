@@ -12,7 +12,7 @@
   <string name="court_actions_message">What would you like to do?</string>
   <string name="court_actions_remove">Remove First Group</string>
   <string name="court_actions_reset">Reset Court</string>
-  <string name="court_actions_title">Court Actions</string>
+  <string name="court_actions_title">Court {court}</string>
   <string name="court_item_number">Court {number}</string>
   <string name="court_item_time">{minutes} minutes ({time})</string>
   <string name="courts_empty">You don\'t seem to have any courts at the moment.</string>

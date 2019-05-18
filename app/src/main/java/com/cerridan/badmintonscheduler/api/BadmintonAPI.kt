@@ -13,6 +13,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface BadmintonAPI {
   // Courts
@@ -35,7 +36,7 @@ interface BadmintonAPI {
   @POST("players/add")
   fun addPlayer(@Body request: Player): Single<GenericResponse>
 
-  @DELETE("players/{name}")
+  @POST("players/delete")
   fun removePlayer(@Body request: DeletePlayerRequest): Single<GenericResponse>
 
   // Session
