@@ -57,13 +57,13 @@ GET players
   ]
 }
 
-POST players
+POST players/add
 {
   "name": String,
   "password": String
 }
 
-DELETE players
+POST players/delete
 {
   "name": String
 }
