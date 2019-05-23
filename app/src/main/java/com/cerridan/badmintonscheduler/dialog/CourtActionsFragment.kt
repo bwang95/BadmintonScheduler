@@ -36,7 +36,7 @@ class CourtActionsFragment : BaseAlertDialogFragment() {
       )
       .setMessage(R.string.court_actions_message)
       .setPositiveButton(R.string.court_actions_remove, null)
-      .setNeutralButton(R.string.add_player_cancel, null)
+      .setNeutralButton(R.string.court_actions_cancel, null)
       .setNegativeButton(R.string.court_actions_reset, null)
       .create()
 

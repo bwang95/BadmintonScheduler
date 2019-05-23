@@ -7,4 +7,5 @@
   <dimen name="global_padding">16dp</dimen>
   <dimen name="global_padding_half">8dp</dimen>
   <dimen name="global_padding_quarter">4dp</dimen>
+  <dimen name="version_icon_size">56dp</dimen>
 </resources>

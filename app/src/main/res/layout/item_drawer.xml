@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:padding="@dimen/global_padding_half"
+    android:padding="@dimen/global_padding"
     >
   <ImageView
       android:id="@+id/iv_drawer_icon"

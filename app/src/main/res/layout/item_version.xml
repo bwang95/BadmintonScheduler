@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cerridan.badmintonscheduler.view.VersionItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:padding="@dimen/global_padding"
+    >
+  <ImageView
+      android:layout_width="@dimen/version_icon_size"
+      android:layout_height="@dimen/version_icon_size"
+      android:contentDescription="@string/drawer_item_content_description"
+      android:src="@drawable/icon_version_drawer"
+      />
+  <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/global_padding"
+      android:layout_weight="1"
+      android:gravity="center_vertical"
+      android:orientation="vertical"
+      >
+    <TextView
+        android:id="@+id/tv_version_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="bottom|start"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:layout_marginBottom="@dimen/global_padding_half"
+        />
+    <TextView
+        android:id="@+id/tv_version_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        tools:text="Version 1.0.0"
+        />
+  </LinearLayout>
+</com.cerridan.badmintonscheduler.view.VersionItemView>

@@ -39,6 +39,7 @@
   <string name="reservation_randoms">Random Players</string>
   <string name="reservation_starts_at">at {time}</string>
   <string name="reservation_time_remaining">{minutes} minutes remaining</string>
+  <string name="version_name">Version {version}</string>
 
   <string-array name="zodiac_animals">
     <item>cat</item>
