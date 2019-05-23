@@ -11,14 +11,17 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
 abstract class BaseAlertDialogFragment : DialogFragment() {
-  protected val positiveButtonClicks
-    get() = (dialog as AlertDialog).getButton(BUTTON_POSITIVE).clicks()
+  protected val positiveButton by lazy { (dialog as AlertDialog).getButton(BUTTON_POSITIVE) }
 
-  protected val neutralButtonClicks
-    get() = (dialog as AlertDialog).getButton(BUTTON_NEUTRAL).clicks()
+  protected val neutralButton by lazy { (dialog as AlertDialog).getButton(BUTTON_NEUTRAL) }
 
-  protected val negativeButtonClicks
-    get() = (dialog as AlertDialog).getButton(BUTTON_NEGATIVE).clicks()
+  protected val negativeButton by lazy { (dialog as AlertDialog).getButton(BUTTON_NEGATIVE) }
+
+  protected val positiveButtonClicks get() = positiveButton.clicks()
+
+  protected val neutralButtonClicks get() = neutralButton.clicks()
+
+  protected val negativeButtonClicks get() = negativeButton.clicks()
 
   private val disposables = CompositeDisposable()
 
