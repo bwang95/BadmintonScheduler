@@ -6,11 +6,15 @@ import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.view.SelectablePlayerItemView
 import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 class SelectablePlayersAdapter(context: Context) : BaseRecyclerViewAdapter(context) {
   private val players = mutableListOf<Player>()
   private val selectedNames = hashSetOf<String>()
+  private val selectedPlayersSubject = PublishSubject.create<Pair<String, Boolean>>()
 
+  val observablePlayerSelections: Observable<Pair<String, Boolean>> get() = selectedPlayersSubject
   val selectedPlayers get() = players.filter { selectedNames.contains(it.name) }
 
   fun setPlayers(players: List<Player>) {
@@ -38,6 +42,7 @@ class SelectablePlayersAdapter(context: Context) : BaseRecyclerViewAdapter(conte
               selectedNames.add(it.name)
               true
             }
+            selectedPlayersSubject.onNext(it.name to isChecked)
           }
           .disposeOnRecycle(holder)
     }

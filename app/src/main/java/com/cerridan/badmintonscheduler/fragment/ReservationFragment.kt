@@ -10,19 +10,20 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
-import android.widget.Toast.LENGTH_SHORT
 import android.widget.ViewAnimator
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.adapter.SelectablePlayersAdapter
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.util.bindView
+import com.cerridan.badmintonscheduler.util.combineLatest
 import com.cerridan.badmintonscheduler.util.displayedChildId
 import com.cerridan.badmintonscheduler.util.hideKeyboard
 import com.cerridan.badmintonscheduler.util.requestFocusAndShowKeyboard
 import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.Single
+import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.disposables.Disposables
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
 class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
@@ -33,6 +34,8 @@ class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
   private val submitButton: Button by bindView(R.id.b_reservation_submit)
 
   private lateinit var adapter: SelectablePlayersAdapter
+
+  private val progressSubject = BehaviorSubject.createDefault(false)
 
   @Inject lateinit var service: BadmintonService
 
@@ -55,6 +58,19 @@ class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
     Disposables.fromAction { courtNumberView.hideKeyboard() }
         .disposeOnPause()
 
+    combineLatest(progressSubject, courtNumberView.textChanges(), adapter.observablePlayerSelections.map { Unit }.startWith(Unit))
+        .map { (progress, text, _) -> !progress && text.isNotBlank() && adapter.selectedPlayers.isNotEmpty() }
+        .subscribe(submitButton::setEnabled)
+        .disposeOnPause()
+
+    progressSubject
+        .subscribe { inProgress ->
+          playersRecycler.isLayoutFrozen = inProgress
+          courtNumberView.isEnabled = !inProgress
+          delayTimeView.isEnabled = !inProgress
+        }
+        .disposeOnPause()
+
     service.getPlayers()
         .doOnSubscribe { playersAnimator.displayedChildId = R.id.pb_reservation_players }
         .map { response ->
@@ -75,26 +91,19 @@ class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
 
     submitButton.clicks()
         .switchMapSingle {
-          when {
-            courtNumberView.text.isNullOrBlank() -> {
-              courtNumberView.error = resources.getString(R.string.reservation_court_number_error)
-              Single.never()
-            }
-            adapter.selectedPlayers.isEmpty() -> {
-              Toast.makeText(view.context, R.string.reservation_players_error, LENGTH_SHORT).show()
-              Single.never()
-            }
-            else -> service.registerCourt(
-                courtNumber = courtNumberView.text.toString().toInt(),
-                players = adapter.selectedPlayers,
-                delayMinutes = if (delayTimeView.text.isBlank()) 0 else delayTimeView.text.toString().toInt()
-            )
-            .doOnSubscribe { /* TODO loading state */ }
-          }
+          service.registerCourt(
+              courtNumber = courtNumberView.text.toString().toInt(),
+              players = adapter.selectedPlayers,
+              delayMinutes = if (delayTimeView.text.isBlank()) 0 else delayTimeView.text.toString().toInt()
+          )
+          .doOnSubscribe { progressSubject.onNext(true) }
         }
         .subscribe { response ->
           response.error
-              ?.also { Toast.makeText(view.context, it, LENGTH_LONG).show() }
+              ?.also {
+                progressSubject.onNext(false)
+                Toast.makeText(view.context, it, LENGTH_LONG).show()
+              }
               ?: activity?.onBackPressed()
         }
         .disposeOnPause()
