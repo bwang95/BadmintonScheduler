@@ -2,8 +2,10 @@ package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
@@ -19,7 +21,10 @@ import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.push
 import com.cerridan.badmintonscheduler.util.showDialog
 import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.SECONDS
 import javax.inject.Inject
 
 class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
@@ -42,14 +47,23 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
     adapter = CourtsAdapter(view.context, reservationDurationMillis)
     courtsRecycler.layoutManager = LinearLayoutManager(view.context)
     courtsRecycler.adapter = adapter
+    courtsRecycler.itemAnimator = object : DefaultItemAnimator() {
+      override fun canReuseUpdatedViewHolder(
+          viewHolder: ViewHolder,
+          payloads: MutableList<Any>
+      ): Boolean = true
+    }
   }
 
   override fun onResume(view: View) {
     super.onResume(view)
 
     observableForegroundBackstackState
-        .filter { it }
         .startWith(true)
+        .switchMap { inForeground ->
+          if (inForeground) Observable.interval(0, 30, SECONDS, mainThread())
+          else Observable.empty()
+        }
         .switchMapSingle {
           service.getCourts()
               .doOnSubscribe { animator.displayedChildId = R.id.pb_courts_progress }

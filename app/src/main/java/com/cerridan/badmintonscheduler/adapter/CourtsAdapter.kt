@@ -65,8 +65,8 @@ class CourtsAdapter(
   }
 
   override fun getItemId(position: Int) = when (val row = rows[position]) {
-    is CourtRow -> row.number.toLong()
-    is ReservationRow -> row.reservation.token.hashCode().toLong()
+    is CourtRow -> row.number.toLong() + row.expiry.time
+    is ReservationRow -> row.reservation.let { it.token.hashCode().toLong() + it.startsAt.time }
   }
 
   override fun getItemViewType(position: Int) = rows[position].layout
