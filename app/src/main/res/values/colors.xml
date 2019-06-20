@@ -8,4 +8,6 @@
   <color name="indigo_500">#3F51B5</color>
   <color name="indigo_700">#303F9F</color>
   <color name="red_200">#ef9a9a</color>
+
+  <color name="icon_color">@android:color/black</color>
 </resources>
