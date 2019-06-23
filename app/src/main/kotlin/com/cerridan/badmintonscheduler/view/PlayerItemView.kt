@@ -16,7 +16,7 @@ class PlayerItemView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
   fun bindAsHeader() {
     isEnabled = false
-    setBackgroundColor(getColor(resources, R.color.icon_color, null))
+    setBackgroundColor(getColor(resources, R.color.header_color, null))
     nameView.setText(R.string.player_name_header)
     passwordView.setText(R.string.player_password_header)
     courtView.setText(R.string.player_court_header)
