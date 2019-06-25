@@ -24,7 +24,7 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.TimeUnit.MINUTES
 import javax.inject.Inject
 
 class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
@@ -61,13 +61,14 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
     observableForegroundBackstackState
         .startWith(true)
         .switchMap { inForeground ->
-          if (inForeground) Observable.interval(0, 30, SECONDS, mainThread())
-          else Observable.empty()
+          if (inForeground) {
+            Observable.interval(0, 2, MINUTES, mainThread())
+                .doOnSubscribe { animator.displayedChildId = R.id.pb_courts_progress }
+          } else {
+            Observable.empty()
+          }
         }
-        .switchMapSingle {
-          service.getCourts()
-              .doOnSubscribe { animator.displayedChildId = R.id.pb_courts_progress }
-        }
+        .switchMapSingle { service.getCourts() }
         .doOnNext {
           animator.displayedChildId = if (it.courts.isNullOrEmpty()) {
             R.id.ll_courts_empty

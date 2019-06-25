@@ -11,8 +11,10 @@ import com.cerridan.badmintonscheduler.view.CourtItemView
 import com.cerridan.badmintonscheduler.view.ReservationItemView
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.subjects.PublishSubject
 import java.util.Date
+import java.util.concurrent.TimeUnit.SECONDS
 
 class CourtsAdapter(
     context: Context,
@@ -54,13 +56,17 @@ class CourtsAdapter(
   override fun onViewAttachedToWindow(holder: ViewHolder, view: View, position: Int) {
     when (val row = rows[position]) {
       is CourtRow -> (view as CourtItemView).apply {
-        bind(row.number, row.expiry)
+        Observable.interval(0L, 30, SECONDS, mainThread())
+            .subscribe { bind(row.number, row.expiry) }
+            .disposeOnRecycle(holder)
         clicks()
             .map { row.number to row.firstReservationToken }
             .subscribe(courtClicksSubject::onNext)
             .disposeOnRecycle(holder)
       }
-      is ReservationRow -> (view as ReservationItemView).bind(row.reservation, reservationDurationMillis)
+      is ReservationRow -> Observable.interval(0L, 30, SECONDS, mainThread())
+          .subscribe { (view as ReservationItemView).bind(row.reservation, reservationDurationMillis) }
+          .disposeOnRecycle(holder)
     }
   }
 

@@ -1,6 +1,7 @@
 package com.cerridan.badmintonscheduler
 
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         .subscribe {
           supportFragmentManager.beginTransaction()
               .replace(R.id.fl_main_fragment_container, it)
+              .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
               .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
               .commit()
         }

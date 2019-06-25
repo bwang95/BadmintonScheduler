@@ -7,6 +7,7 @@
   <color name="green_a700">#00c853</color>
   <color name="indigo_500">#3F51B5</color>
   <color name="indigo_700">#303F9F</color>
+  <color name="orange_500">#FF9800</color>
   <color name="red_200">#ef9a9a</color>
 
   <color name="header_color">@android:color/white</color>
