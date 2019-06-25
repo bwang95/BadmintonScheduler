@@ -3,14 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
-sourceSets {
-  main {
-    java {
-      srcDirs = ['src/main/kotlin']
-    }
-  }
-}
-
 android {
   compileSdkVersion 28
 
