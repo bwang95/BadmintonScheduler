@@ -24,6 +24,7 @@ class CourtsAdapter(
     class CourtRow(
         val number: Int,
         val firstReservationToken: String,
+        val start: Date,
         val expiry: Date
     ) : Row(R.layout.item_court)
 
@@ -45,7 +46,7 @@ class CourtsAdapter(
         .toSortedMap()
         .forEach { (number, reservations) ->
           val expiry = Date(reservations.last().startsAt.time + reservationDurationMillis)
-          rows += CourtRow(number, reservations.first().token, expiry)
+          rows += CourtRow(number, reservations.first().token, reservations.first().startsAt, expiry)
           rows += reservations.map(::ReservationRow)
         }
     notifyDataSetChanged()
@@ -57,7 +58,7 @@ class CourtsAdapter(
     when (val row = rows[position]) {
       is CourtRow -> (view as CourtItemView).apply {
         Observable.interval(0L, 30, SECONDS, mainThread())
-            .subscribe { bind(row.number, row.expiry) }
+            .subscribe { bind(row.number, row.start, row.expiry) }
             .disposeOnRecycle(holder)
         clicks()
             .map { row.number to row.firstReservationToken }

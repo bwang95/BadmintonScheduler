@@ -17,14 +17,14 @@ class CourtItemView(context: Context, attrs: AttributeSet) : FrameLayout(context
   private val numberView: TextView by bindView(R.id.tv_court_number)
   private val timeView: TextView by bindView(R.id.tv_court_time)
 
-  fun bind(number: Int, expiry: Date) {
+  fun bind(number: Int, start: Date, expiry: Date) {
     val now = Date()
 
     numberView.text = Phrase.from(this, R.string.court_item_number)
         .put("number", number)
         .format()
 
-    if (expiry.after(now)) {
+    if (start.after(now)) {
       timeView.setTextColor(getColor(resources, R.color.orange_500, null))
     } else {
       TypedValue()
