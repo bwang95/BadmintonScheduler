@@ -1,6 +1,7 @@
 package com.cerridan.badmintonscheduler.view
 
 import android.content.Context
+import android.support.annotation.ColorInt
 import android.support.v4.content.res.ResourcesCompat.getColor
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -17,6 +18,14 @@ class CourtItemView(context: Context, attrs: AttributeSet) : FrameLayout(context
   private val numberView: TextView by bindView(R.id.tv_court_number)
   private val timeView: TextView by bindView(R.id.tv_court_time)
 
+  @ColorInt private var textColor: Int? = null
+
+  override fun onFinishInflate() {
+    super.onFinishInflate()
+
+    textColor = numberView.textColors.defaultColor
+  }
+
   fun bind(number: Int, start: Date, expiry: Date) {
     val now = Date()
 
@@ -27,10 +36,7 @@ class CourtItemView(context: Context, attrs: AttributeSet) : FrameLayout(context
     if (start.after(now)) {
       timeView.setTextColor(getColor(resources, R.color.orange_500, null))
     } else {
-      TypedValue()
-          .apply { context.theme.resolveAttribute(android.R.attr.textColor, this, true) }
-          .data
-          .let(timeView::setTextColor)
+      textColor?.let(timeView::setTextColor)
 
       timeView.text = expiry.formatTime(context)
     }
