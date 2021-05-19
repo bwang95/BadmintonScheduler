@@ -5,9 +5,9 @@ import android.view.View
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.view.PlayerItemView
-import com.jakewharton.rxbinding2.view.longClicks
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import com.jakewharton.rxbinding4.view.longClicks
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class PlayersAdapter(context: Context) : BaseRecyclerViewAdapter(context) {
   private val players = mutableListOf<Player>()

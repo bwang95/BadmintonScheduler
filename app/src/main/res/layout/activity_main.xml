@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="com.cerridan.badmintonscheduler.MainActivity"
     >
-  <android.support.v7.widget.Toolbar
+  <androidx.appcompat.widget.Toolbar
       android:id="@+id/tb_main_toolbar"
       android:layout_width="match_parent"
       android:layout_height="?android:attr/actionBarSize"
@@ -17,7 +17,7 @@
       app:titleTextColor="@android:color/white"
       android:elevation="@dimen/global_elevation"
       />
-  <android.support.v4.widget.DrawerLayout
+  <androidx.drawerlayout.widget.DrawerLayout
       android:id="@+id/dl_main_content"
       android:layout_width="match_parent"
       android:layout_height="0dp"
@@ -29,12 +29,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_main_nav_drawer"
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="?android:attr/colorBackground"
         />
-  </android.support.v4.widget.DrawerLayout>
+  </androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>

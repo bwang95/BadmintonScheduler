@@ -1,9 +1,9 @@
 package com.cerridan.badmintonscheduler.util
 
-import io.reactivex.Observable
-import io.reactivex.ObservableSource
-import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Function3
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableSource
+import io.reactivex.rxjava3.functions.BiFunction
+import io.reactivex.rxjava3.functions.Function3
 
 inline fun <reified T1, reified T2> combineLatest(
     source1: ObservableSource<T1>,

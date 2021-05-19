@@ -1,15 +1,15 @@
 package com.cerridan.badmintonscheduler.util
 
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.OnScrollListener
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.ViewAnimator
-import io.reactivex.Observable
-import io.reactivex.android.MainThreadDisposable
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.rxjava3.android.MainThreadDisposable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.rxjava3.core.Observable
 
 
 var ViewAnimator.displayedChildId

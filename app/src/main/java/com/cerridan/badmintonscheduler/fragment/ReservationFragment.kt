@@ -1,10 +1,10 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.DividerItemDecoration.VERTICAL
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -20,10 +20,10 @@ import com.cerridan.badmintonscheduler.util.combineLatest
 import com.cerridan.badmintonscheduler.util.displayedChildId
 import com.cerridan.badmintonscheduler.util.hideKeyboard
 import com.cerridan.badmintonscheduler.util.requestFocusAndShowKeyboard
-import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.textChanges
-import io.reactivex.disposables.Disposables
-import io.reactivex.subjects.BehaviorSubject
+import com.jakewharton.rxbinding4.view.clicks
+import com.jakewharton.rxbinding4.widget.textChanges
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
 class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
@@ -55,10 +55,10 @@ class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
 
     courtNumberView.requestFocusAndShowKeyboard()
 
-    Disposables.fromAction { courtNumberView.hideKeyboard() }
+    Disposable.fromAction { courtNumberView.hideKeyboard() }
         .disposeOnPause()
 
-    combineLatest(progressSubject, courtNumberView.textChanges(), adapter.observablePlayerSelections.map { Unit }.startWith(Unit))
+    combineLatest(progressSubject, courtNumberView.textChanges(), adapter.observablePlayerSelections.map { Unit }.startWithItem(Unit))
         .map { (progress, text, _) -> !progress && text.isNotBlank() && adapter.selectedPlayers.isNotEmpty() }
         .subscribe(submitButton::setEnabled)
         .disposeOnPause()

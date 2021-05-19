@@ -1,7 +1,7 @@
 package com.cerridan.badmintonscheduler.adapter
 
 import android.content.Context
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.cerridan.badmintonscheduler.BuildConfig
 import com.cerridan.badmintonscheduler.R
@@ -10,9 +10,9 @@ import com.cerridan.badmintonscheduler.adapter.DrawerAdapter.Row.VersionRow
 import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor
 import com.cerridan.badmintonscheduler.view.DrawerItemView
 import com.cerridan.badmintonscheduler.view.VersionItemView
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class DrawerAdapter(context: Context) : BaseRecyclerViewAdapter(context) {
   sealed class Row(@LayoutRes val layout: Int) {

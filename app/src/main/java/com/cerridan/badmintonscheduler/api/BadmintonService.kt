@@ -8,9 +8,9 @@ import com.cerridan.badmintonscheduler.api.request.UnregisterCourtRequest
 import com.cerridan.badmintonscheduler.api.response.CourtsResponse
 import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.api.response.PlayersResponse
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.schedulers.Schedulers.io
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers.io
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import java.io.IOException

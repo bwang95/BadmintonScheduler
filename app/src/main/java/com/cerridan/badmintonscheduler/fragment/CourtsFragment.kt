@@ -1,11 +1,11 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.ViewHolder
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
@@ -20,11 +20,10 @@ import com.cerridan.badmintonscheduler.util.displayedChildId
 import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.push
 import com.cerridan.badmintonscheduler.util.showDialog
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.rxjava3.core.Observable
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeUnit.MINUTES
 import javax.inject.Inject
 
 class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
@@ -45,7 +44,8 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
         view.resources.getInteger(R.integer.court_reservation_minutes).toLong()
     )
     adapter = CourtsAdapter(view.context, reservationDurationMillis)
-    courtsRecycler.layoutManager = LinearLayoutManager(view.context)
+    courtsRecycler.layoutManager =
+        LinearLayoutManager(view.context)
     courtsRecycler.adapter = adapter
     courtsRecycler.itemAnimator = object : DefaultItemAnimator() {
       override fun canReuseUpdatedViewHolder(
@@ -59,7 +59,7 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
     super.onResume(view)
 
     observableForegroundBackstackState
-        .startWith(true)
+        .startWithItem(true)
         .switchMap { inForeground ->
           if (inForeground) {
             Observable.interval(0, 2, MINUTES, mainThread())

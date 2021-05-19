@@ -1,11 +1,11 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.DividerItemDecoration.VERTICAL
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
@@ -21,7 +21,7 @@ import com.cerridan.badmintonscheduler.util.displayedChildId
 import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.showDialog
 import com.cerridan.badmintonscheduler.view.PlayerItemView
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import javax.inject.Inject
 
 class PlayersFragment: BaseFragment(R.layout.fragment_players) {
@@ -53,7 +53,7 @@ class PlayersFragment: BaseFragment(R.layout.fragment_players) {
 
     observableForegroundBackstackState
         .filter { it }
-        .startWith(true)
+        .startWithItem(true)
         .switchMapSingle {
           service.getPlayers()
               .doOnSubscribe { animator.displayedChildId = R.id.pb_players_progress }

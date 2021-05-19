@@ -1,8 +1,8 @@
 package com.cerridan.badmintonscheduler.dialog
 
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputEditText
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.Spinner
 import com.cerridan.badmintonscheduler.R
@@ -14,10 +14,10 @@ import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.combineLatest
 import com.cerridan.badmintonscheduler.util.hideKeyboard
 import com.cerridan.badmintonscheduler.util.requestFocusAndShowKeyboard
-import com.jakewharton.rxbinding2.widget.itemSelections
-import com.jakewharton.rxbinding2.widget.textChanges
-import io.reactivex.disposables.Disposables
-import io.reactivex.subjects.BehaviorSubject
+import com.jakewharton.rxbinding4.widget.itemSelections
+import com.jakewharton.rxbinding4.widget.textChanges
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
 class AddPlayerFragment : BaseAlertDialogFragment() {
@@ -47,7 +47,7 @@ class AddPlayerFragment : BaseAlertDialogFragment() {
 
     nameView.requestFocusAndShowKeyboard()
 
-    Disposables.fromAction { nameView.hideKeyboard() }
+    Disposable.fromAction { nameView.hideKeyboard() }
         .disposeOnPause()
 
     combineLatest(progressSubject, nameView.textChanges(), passwordSpinner.itemSelections())

@@ -4,11 +4,11 @@ import android.content.DialogInterface.BUTTON_NEGATIVE
 import android.content.DialogInterface.BUTTON_NEUTRAL
 import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AlertDialog
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 
 abstract class BaseAlertDialogFragment : DialogFragment() {
   protected val positiveButton by lazy { (dialog as AlertDialog).getButton(BUTTON_POSITIVE) }

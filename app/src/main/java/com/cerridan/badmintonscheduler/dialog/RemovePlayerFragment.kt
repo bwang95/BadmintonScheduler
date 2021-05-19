@@ -1,7 +1,7 @@
 package com.cerridan.badmintonscheduler.dialog
 
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import com.cerridan.badmintonscheduler.R

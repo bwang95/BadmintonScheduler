@@ -1,7 +1,7 @@
 package com.cerridan.badmintonscheduler.fragment
 
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.cerridan.badmintonscheduler.R
 
 enum class DrawerNavigableFragmentDescriptor(

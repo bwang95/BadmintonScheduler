@@ -1,7 +1,7 @@
 package com.cerridan.badmintonscheduler.view
 
 import android.content.Context
-import android.support.v4.content.res.ResourcesCompat.getColor
+import androidx.core.content.res.ResourcesCompat.getColor
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.TextView

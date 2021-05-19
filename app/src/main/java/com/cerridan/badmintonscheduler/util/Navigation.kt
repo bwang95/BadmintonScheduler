@@ -2,15 +2,15 @@
 package com.cerridan.badmintonscheduler.util
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager.OnBackStackChangedListener
-import android.support.v4.app.FragmentTransaction
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
+import androidx.fragment.app.FragmentTransaction
 import com.cerridan.badmintonscheduler.MainActivity
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.fragment.BaseFragment
-import io.reactivex.Observable
-import io.reactivex.android.MainThreadDisposable
+import io.reactivex.rxjava3.android.MainThreadDisposable
+import io.reactivex.rxjava3.core.Observable
 
 private const val KEY_BACKSTACK = "dialog/backstack_key"
 

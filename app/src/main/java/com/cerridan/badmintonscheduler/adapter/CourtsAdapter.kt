@@ -1,7 +1,7 @@
 package com.cerridan.badmintonscheduler.adapter
 
 import android.content.Context
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.adapter.CourtsAdapter.Row.CourtRow
@@ -9,10 +9,10 @@ import com.cerridan.badmintonscheduler.adapter.CourtsAdapter.Row.ReservationRow
 import com.cerridan.badmintonscheduler.api.model.Reservation
 import com.cerridan.badmintonscheduler.view.CourtItemView
 import com.cerridan.badmintonscheduler.view.ReservationItemView
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.subjects.PublishSubject
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.Date
 import java.util.concurrent.TimeUnit.SECONDS
 

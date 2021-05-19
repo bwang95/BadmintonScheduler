@@ -2,9 +2,9 @@ package com.cerridan.badmintonscheduler
 
 import android.app.Application
 import android.os.Build
-import android.support.v7.app.AppCompatDelegate
-import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 
 class BadmintonApp : Application() {
