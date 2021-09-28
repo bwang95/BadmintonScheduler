@@ -74,7 +74,7 @@ class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
     service.getPlayers()
         .doOnSubscribe { playersAnimator.displayedChildId = R.id.pb_reservation_players }
         .map { response ->
-          response.error to (response.players?.filter { it.courtNumber == null } ?: emptyList())
+          response.error to (response.players?.filter { it.hasActiveReservation != true } ?: emptyList())
         }
         .doOnSuccess { (_, players) ->
           playersAnimator.displayedChildId = if (players.isNullOrEmpty()) {

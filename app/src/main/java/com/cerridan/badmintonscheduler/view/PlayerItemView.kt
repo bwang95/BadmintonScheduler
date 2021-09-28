@@ -26,6 +26,6 @@ class PlayerItemView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     isEnabled = true
     nameView.text = player.name
     passwordView.text = player.password
-    courtView.text = player.courtNumber?.toString() ?: ""
+    courtView.text = player.hasActiveReservation?.toString() ?: ""
   }
 }

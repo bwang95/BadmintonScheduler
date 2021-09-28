@@ -62,7 +62,7 @@ class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
         .startWithItem(true)
         .switchMap { inForeground ->
           if (inForeground) {
-            Observable.interval(0, 2, MINUTES, mainThread())
+            Observable.interval(0, 2, TimeUnit.MINUTES, mainThread())
                 .doOnSubscribe { animator.displayedChildId = R.id.pb_courts_progress }
           } else {
             Observable.empty()

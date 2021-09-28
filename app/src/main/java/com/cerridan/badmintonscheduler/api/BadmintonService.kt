@@ -44,11 +44,11 @@ class BadmintonService(
       .handleErrorsOnMainThread(::CourtsResponse)
 
   fun registerCourt(courtNumber: Int, players: List<Player>, delayMinutes: Int) = api
-      .registerCourt(RegisterCourtRequest(courtNumber, players.map(Player::name), delayMinutes, false))
+      .registerCourt(RegisterCourtRequest(courtNumber, players.map(Player::name), delayMinutes))
       .handleErrorsOnMainThread(::GenericResponse)
 
   fun unregisterCourt(reservationToken: String) = api
-      .unregisterCourt(UnregisterCourtRequest(reservationToken))
+      .unregisterCourt(reservationToken)
       .handleErrorsOnMainThread(::GenericResponse)
 
   fun resetCourt(courtNumber: Int) = api
@@ -65,7 +65,7 @@ class BadmintonService(
       .handleErrorsOnMainThread(::GenericResponse)
 
   fun removePlayer(name: String) = api
-      .removePlayer(DeletePlayerRequest(name))
+      .removePlayer(name)
       .handleErrorsOnMainThread(::GenericResponse)
 
   // Session

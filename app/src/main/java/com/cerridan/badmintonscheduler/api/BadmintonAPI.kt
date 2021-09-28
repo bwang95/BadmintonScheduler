@@ -13,30 +13,32 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface BadmintonAPI {
   // Courts
   @GET("courts")
   fun getCourts(): Single<CourtsResponse>
 
-  @POST("courts/register")
+  @POST("courts")
   fun registerCourt(@Body request: RegisterCourtRequest): Single<GenericResponse>
 
-  @POST("courts/unregister")
-  fun unregisterCourt(@Body request: UnregisterCourtRequest): Single<GenericResponse>
+  @DELETE("courts/{id}")
+  fun unregisterCourt(@Path("id") reservationToken: String): Single<GenericResponse>
 
+  // TODO remove
   @POST("court/reset")
   fun resetCourt(@Body request: CourtNumberRequest): Single<GenericResponse>
 
   // Players
-  @GET("players")
+  @GET("users")
   fun getPlayers(): Single<PlayersResponse>
 
-  @POST("players/add")
+  @POST("users")
   fun addPlayer(@Body request: Player): Single<GenericResponse>
 
-  @POST("players/delete")
-  fun removePlayer(@Body request: DeletePlayerRequest): Single<GenericResponse>
+  @DELETE("users/{id}")
+  fun removePlayer(@Path("id") name: String): Single<GenericResponse>
 
   // Session
   @POST("session")
