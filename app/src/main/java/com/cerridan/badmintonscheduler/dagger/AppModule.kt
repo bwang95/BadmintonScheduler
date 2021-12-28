@@ -2,11 +2,17 @@ package com.cerridan.badmintonscheduler.dagger
 
 import android.app.Application
 import android.util.Log
+import androidx.room.Room
 import com.cerridan.badmintonscheduler.BuildConfig
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.BadmintonAPI
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.api.UnixDateAdapter
+import com.cerridan.badmintonscheduler.database.BadmintonDatabase
+import com.cerridan.badmintonscheduler.database.dao.PlayerDAO
+import com.cerridan.badmintonscheduler.database.dao.ReservationDAO
+import com.cerridan.badmintonscheduler.manager.PlayerManager
+import com.cerridan.badmintonscheduler.manager.ReservationManager
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -50,4 +56,19 @@ class AppModule(private val app: Application) {
 
   @Provides @Singleton fun provideBadmintonService(retrofit: Retrofit, api: BadmintonAPI) =
       BadmintonService(retrofit, api)
+
+  @Provides @Singleton fun provideBadmintonDatabase(): BadmintonDatabase =
+      Room.databaseBuilder(app, BadmintonDatabase::class.java, BadmintonDatabase.DB_NAME).build()
+
+  @Provides @Singleton fun providePlayerDao(database: BadmintonDatabase) =
+      database.playerDao()
+
+  @Provides @Singleton fun provideReservationDao(database: BadmintonDatabase) =
+      database.reservationDao()
+
+  @Provides @Singleton fun provideReservationManager(service: BadmintonService, dao: ReservationDAO) =
+      ReservationManager(service, dao)
+
+  @Provides @Singleton fun providePlayerManager(service: BadmintonService, dao: PlayerDAO) =
+      PlayerManager(service, dao)
 }

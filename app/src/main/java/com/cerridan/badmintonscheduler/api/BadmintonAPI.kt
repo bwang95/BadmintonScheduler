@@ -26,10 +26,6 @@ interface BadmintonAPI {
   @DELETE("courts/{id}")
   fun unregisterCourt(@Path("id") reservationToken: String): Single<GenericResponse>
 
-  // TODO remove
-  @POST("court/reset")
-  fun resetCourt(@Body request: CourtNumberRequest): Single<GenericResponse>
-
   // Players
   @GET("users")
   fun getPlayers(): Single<PlayersResponse>

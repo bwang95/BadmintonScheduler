@@ -22,7 +22,7 @@ class RemovePlayerFragment : BaseAlertDialogFragment() {
 
   init { DaggerInjector.appComponent.inject(this) }
 
-  override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(context!!)
+  override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(requireContext())
       .setTitle(R.string.remove_player_title)
       .setMessage(
           Phrase.from(context, R.string.remove_player_message)

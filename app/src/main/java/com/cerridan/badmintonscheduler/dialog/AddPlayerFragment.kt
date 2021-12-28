@@ -30,7 +30,9 @@ class AddPlayerFragment : BaseAlertDialogFragment() {
 
   init { DaggerInjector.appComponent.inject(this) }
 
-  override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog = AlertDialog.Builder(context!!)
+  override fun onCreateDialog(
+    savedInstanceState: Bundle?
+  ): AlertDialog = AlertDialog.Builder(requireContext())
       .setTitle(R.string.add_player_title)
       .setView(LayoutInflater.from(context).inflate(R.layout.dialog_add_player, null))
       .setPositiveButton(R.string.add_player_add, null)

@@ -13,8 +13,8 @@
   <string name="court_actions_remove">Remove First Group</string>
   <string name="court_actions_reset">Reset Court</string>
   <string name="court_actions_title">Court {court}</string>
-  <string name="court_item_number">Court {number}</string>
-  <string name="court_item_time">{minutes} minutes ({time})</string>
+  <string name="court_item_number">Court %1$s</string>
+  <string name="court_item_time">%1$s minutes (%2$s)</string>
   <string name="courts_empty">You don\'t seem to have any courts at the moment.</string>
   <string name="courts_title">Courts</string>
   <string name="drawer_closed">Drawer Closed</string>
@@ -37,8 +37,8 @@
   <string name="reservation_players_error">You must select at least one player.</string>
   <string name="reservation_register">Register</string>
   <string name="reservation_randoms">Random Players</string>
-  <string name="reservation_starts_at">at {time}</string>
-  <string name="reservation_time_remaining">{minutes} minutes remaining</string>
+  <string name="reservation_starts_at">at %1$s</string>
+  <string name="reservation_time_remaining">%1$s minutes remaining</string>
   <string name="version_name">Version {version}</string>
 
   <string-array name="zodiac_animals">

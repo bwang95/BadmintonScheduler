@@ -18,4 +18,6 @@ interface AppComponent {
   fun inject(playersFragment: PlayersFragment)
   fun inject(removePlayerFragment: RemovePlayerFragment)
   fun inject(reservationFragment: ReservationFragment)
+
+  fun viewModelFactory(): DaggerViewModelFactory
 }

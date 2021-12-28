@@ -1,95 +1,109 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import android.view.View
 import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
-import android.widget.ViewAnimator
+import android.widget.Toast.LENGTH_SHORT
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.viewModels
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.adapter.CourtsAdapter
-import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.dialog.CourtActionsFragment
-import com.cerridan.badmintonscheduler.util.bindView
-import com.cerridan.badmintonscheduler.util.displayedChildId
 import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.push
 import com.cerridan.badmintonscheduler.util.showDialog
-import com.jakewharton.rxbinding4.view.clicks
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.rxjava3.core.Observable
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import com.cerridan.badmintonscheduler.view.CourtItem
+import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel
+import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel.Court
+import io.reactivex.rxjava3.disposables.SerialDisposable
+import java.util.Date
 
-class CourtsFragment : BaseFragment(R.layout.fragment_courts) {
-  private val animator: ViewAnimator by bindView(R.id.va_courts_animator)
-  private val courtsRecycler: RecyclerView by bindView(R.id.rv_courts_recycler)
-  private val registerButton: FloatingActionButton by bindView(R.id.fab_courts_register)
+class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
 
-  @Inject lateinit var service: BadmintonService
-
-  private lateinit var adapter: CourtsAdapter
-
-  init { DaggerInjector.appComponent.inject(this) }
+  private val foregroundDisposable = SerialDisposable()
+  override val viewModel: CourtsViewModel by viewModels {
+    DaggerInjector.appComponent.viewModelFactory()
+  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    val reservationDurationMillis = TimeUnit.MINUTES.toMillis(
-        view.resources.getInteger(R.integer.court_reservation_minutes).toLong()
-    )
-    adapter = CourtsAdapter(view.context, reservationDurationMillis)
-    courtsRecycler.layoutManager =
-        LinearLayoutManager(view.context)
-    courtsRecycler.adapter = adapter
-    courtsRecycler.itemAnimator = object : DefaultItemAnimator() {
-      override fun canReuseUpdatedViewHolder(
-          viewHolder: ViewHolder,
-          payloads: MutableList<Any>
-      ): Boolean = true
+    observableForegroundBackstackState
+        .filter { it }
+        .subscribe { viewModel.refresh() }
+        .let(foregroundDisposable::set)
+
+    viewModel.errors.observe(this) { event ->
+      event.value?.let { Toast.makeText(context, it, LENGTH_SHORT).show() }
+    }
+
+    (view as ComposeView).setContent {
+      val now = Date()
+      val courts = viewModel.courts
+
+      Scaffold(
+          content = {
+            when {
+              courts == null -> Column(
+                  verticalArrangement = Arrangement.Center,
+                  horizontalAlignment = Alignment.CenterHorizontally
+              ) {
+                CircularProgressIndicator()
+              }
+
+              courts.isEmpty() -> Column(
+                  modifier = Modifier.fillMaxSize(),
+                  verticalArrangement = Arrangement.Center,
+                  horizontalAlignment = Alignment.CenterHorizontally
+              ) {
+                Icon(painterResource(R.drawable.icon_court), stringResource(R.string.courts_empty))
+                Text(stringResource(R.string.courts_empty))
+              }
+
+              else -> LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    courts,
+                    key = Court::name,
+                    itemContent = {
+                      CourtItem(view.context, it, now) {
+                        showDialog(CourtActionsFragment.create(it.name, it.reservations.first().token))
+                      }
+                    }
+                )
+              }
+            }
+          },
+          floatingActionButton = {
+            FloatingActionButton(
+                onClick = { push(ReservationFragment()) },
+                content = { Icon(painterResource(R.drawable.icon_add), contentDescription = "Add") }
+            )
+          }
+      )
     }
   }
 
-  override fun onResume(view: View) {
-    super.onResume(view)
+  override fun onDestroyView() {
+    foregroundDisposable.dispose()
+    super.onDestroyView()
+  }
 
-    observableForegroundBackstackState
-        .startWithItem(true)
-        .switchMap { inForeground ->
-          if (inForeground) {
-            Observable.interval(0, 2, TimeUnit.MINUTES, mainThread())
-                .doOnSubscribe { animator.displayedChildId = R.id.pb_courts_progress }
-          } else {
-            Observable.empty()
-          }
-        }
-        .switchMapSingle { service.getCourts() }
-        .doOnNext {
-          animator.displayedChildId = if (it.courts.isNullOrEmpty()) {
-            R.id.ll_courts_empty
-          } else {
-            R.id.rv_courts_recycler
-          }
-        }
-        .subscribe { response ->
-          response.error?.also { Toast.makeText(view.context, it, LENGTH_LONG).show() }
-          response.courts?.let(adapter::setReservations)
-        }
-        .disposeOnPause()
-
-    registerButton.clicks()
-        .subscribe { push(ReservationFragment()) }
-        .disposeOnPause()
-
-    adapter.courtClicks
-        .subscribe { (number, reservationToken) ->
-          showDialog(CourtActionsFragment.create(number, reservationToken))
-        }
-        .disposeOnPause()
+  override fun onResume() {
+    super.onResume()
+    viewModel.refresh()
   }
 }

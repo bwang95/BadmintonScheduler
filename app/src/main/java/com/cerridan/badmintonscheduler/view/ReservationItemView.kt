@@ -22,7 +22,7 @@ class ReservationItemView(
   fun bind(reservation: Reservation, durationMillis: Long) {
     val now = Date()
 
-    namesView.text = if (reservation.randoms) {
+    namesView.text = if (reservation.playerNames.isEmpty()) {
       resources.getString(R.string.reservation_randoms)
     } else {
       reservation.playerNames.joinToString()

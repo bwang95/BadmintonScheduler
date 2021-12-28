@@ -13,7 +13,7 @@ private val TWENTY_FOUR_HOUR_FORMAT = object : ThreadLocal<SimpleDateFormat>() {
 
 private val TWELVE_HOUR_FORMAT = object : ThreadLocal<SimpleDateFormat>() {
   @SuppressLint("SimpleDateFormat")
-  override fun initialValue() = SimpleDateFormat("hh:mm a")
+  override fun initialValue() = SimpleDateFormat("h:mm a")
 }
 
 fun Date.formatTime(context: Context) =
