@@ -1,5 +1,8 @@
 package com.cerridan.badmintonscheduler.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.cerridan.badmintonscheduler.api.model.Player
@@ -10,16 +13,16 @@ import javax.inject.Inject
 class PlayersViewModel @Inject constructor(
   private val playerManager: PlayerManager
 ) : BaseViewModel() {
-  private val mutablePlayers = MutableLiveData<List<Player>>()
-  val players: LiveData<List<Player>> get() = mutablePlayers
-
   private val mutableErrors = MutableLiveData<SingleUseEvent<String>>()
   val errors: LiveData<SingleUseEvent<String>> get() = mutableErrors
 
-  fun onResume() {
+  var players by mutableStateOf<List<Player>?>(null)
+    private set
+
+  fun refresh() {
     playerManager.getPlayers()
         .subscribe { (error, players) ->
-          mutablePlayers.postValue(players)
+          this.players = players
           if (error.isNotBlank()) mutableErrors.postValue(SingleUseEvent(error))
         }
         .disposeOnClear()

@@ -3,13 +3,14 @@ package com.cerridan.badmintonscheduler.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
+import android.widget.Toast.LENGTH_LONG
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -48,7 +49,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
         .let(foregroundDisposable::set)
 
     viewModel.errors.observe(this) { event ->
-      event.value?.let { Toast.makeText(context, it, LENGTH_SHORT).show() }
+      event.value?.let { Toast.makeText(view.context, it, LENGTH_LONG).show() }
     }
 
     (view as ComposeView).setContent {
@@ -59,6 +60,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
           content = {
             when {
               courts == null -> Column(
+                  modifier = Modifier.fillMaxSize(),
                   verticalArrangement = Arrangement.Center,
                   horizontalAlignment = Alignment.CenterHorizontally
               ) {
@@ -79,6 +81,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
                     courts,
                     key = Court::name,
                     itemContent = {
+                      Divider()
                       CourtItem(view.context, it, now) {
                         showDialog(CourtActionsFragment.create(it.name, it.reservations.first().token))
                       }
@@ -98,7 +101,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
   }
 
   override fun onDestroyView() {
-    foregroundDisposable.dispose()
+    foregroundDisposable.set(null)
     super.onDestroyView()
   }
 
