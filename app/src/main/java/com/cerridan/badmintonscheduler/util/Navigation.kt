@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.FragmentTransaction
 import com.cerridan.badmintonscheduler.MainActivity
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.fragment.BaseFragment
 import io.reactivex.rxjava3.android.MainThreadDisposable
 import io.reactivex.rxjava3.core.Observable
 
@@ -16,7 +15,7 @@ private const val KEY_BACKSTACK = "dialog/backstack_key"
 
 private val Fragment.backstackId get() = arguments?.getInt(KEY_BACKSTACK, -1) ?: -1
 
-fun Fragment.push(fragment: BaseFragment) = (activity as? MainActivity)
+fun Fragment.push(fragment: Fragment) = (activity as? MainActivity)
     ?.supportFragmentManager
     ?.beginTransaction()
     ?.addToBackStack(null)
@@ -32,7 +31,7 @@ fun Fragment.showDialog(dialog: DialogFragment) = (activity as? MainActivity)
     ?.let { arguments = (arguments ?: Bundle()).apply { putInt(KEY_BACKSTACK, it) } }
     ?: Unit
 
-fun Fragment.replace(fragment: BaseFragment) = (activity as? MainActivity)
+fun Fragment.replace(fragment: Fragment) = (activity as? MainActivity)
     ?.supportFragmentManager
     ?.beginTransaction()
     ?.replace(R.id.fl_main_fragment_container, fragment)

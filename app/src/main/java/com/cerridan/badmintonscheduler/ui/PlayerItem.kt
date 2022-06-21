@@ -1,4 +1,4 @@
-package com.cerridan.badmintonscheduler.view
+package com.cerridan.badmintonscheduler.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +18,7 @@ fun PlayerItem(
   name: String,
   password: String,
   court: String,
-  onClick: () -> Unit
+  onClick: () -> Unit = {}
 ) {
   Row(
       modifier = modifier

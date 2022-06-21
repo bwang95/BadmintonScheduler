@@ -1,7 +1,5 @@
-package com.cerridan.badmintonscheduler.view
+package com.cerridan.badmintonscheduler.ui
 
-import android.content.Context
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -9,6 +7,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.cerridan.badmintonscheduler.R
@@ -20,11 +19,10 @@ import java.util.concurrent.TimeUnit
 
 @Composable
 fun CourtItem(
-  context: Context,
+  modifier: Modifier = Modifier,
   court: Court,
-  now: Date,
-  onClick: () -> Unit
-) = Column(modifier = Modifier.clickable(onClick = onClick)) {
+  now: Date
+) = Column(modifier) {
   Row(
       modifier = Modifier.padding(
           horizontal = dimensionResource(R.dimen.global_padding_half),
@@ -38,7 +36,7 @@ fun CourtItem(
 
     val expiry = court.reservations.last().endsAt
     val minutes = TimeUnit.MILLISECONDS.toMinutes(expiry.time - now.time)
-    Text(stringResource(R.string.court_item_time, minutes, expiry.formatTime(context)))
+    Text(stringResource(R.string.court_item_time, minutes, expiry.formatTime(LocalContext.current)))
   }
   court.reservations.forEach { reservation ->
     Divider(startIndent = dimensionResource(R.dimen.global_padding))
@@ -61,7 +59,7 @@ fun CourtItem(
         )
         stringResource(R.string.reservation_time_remaining, minutes)
       } else {
-        stringResource(R.string.reservation_starts_at, reservation.startsAt.formatTime(context))
+        stringResource(R.string.reservation_starts_at, reservation.startsAt.formatTime(LocalContext.current))
       }
       Text(time)
     }

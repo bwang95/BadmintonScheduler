@@ -7,7 +7,6 @@ import android.widget.Toast.LENGTH_LONG
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
-import com.squareup.phrase.Phrase
 import javax.inject.Inject
 
 class RemovePlayerFragment : BaseAlertDialogFragment() {
@@ -25,9 +24,10 @@ class RemovePlayerFragment : BaseAlertDialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(requireContext())
       .setTitle(R.string.remove_player_title)
       .setMessage(
-          Phrase.from(context, R.string.remove_player_message)
-              .put("player", arguments?.getString(KEY_PLAYER_NAME)!!)
-              .format()
+        resources.getString(
+          R.string.remove_player_message,
+          arguments?.getString(KEY_PLAYER_NAME)!!
+        )
       )
       .setPositiveButton(R.string.remove_player_confirm, null)
       .setNegativeButton(R.string.remove_player_cancel, null)

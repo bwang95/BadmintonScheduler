@@ -12,7 +12,7 @@
   <string name="court_actions_message">What would you like to do?</string>
   <string name="court_actions_remove">Remove First Group</string>
   <string name="court_actions_reset">Reset Court</string>
-  <string name="court_actions_title">Court {court}</string>
+  <string name="court_actions_title">Court %1$s</string>
   <string name="court_item_number">Court %1$s</string>
   <string name="court_item_time">%1$s minutes (%2$s)</string>
   <string name="courts_empty">You don\'t seem to have any courts at the moment.</string>
@@ -27,7 +27,7 @@
   <string name="players_title">Players</string>
   <string name="remove_player_cancel">Cancel</string>
   <string name="remove_player_confirm">Remove</string>
-  <string name="remove_player_message">Remove player {player}?</string>
+  <string name="remove_player_message">Remove player %1$s?</string>
   <string name="remove_player_title">Remove Player</string>
   <string name="reservation_court_number">Court Number</string>
   <string name="reservation_court_number_error">Court Number cannot be blank</string>
@@ -39,7 +39,7 @@
   <string name="reservation_randoms">Random Players</string>
   <string name="reservation_starts_at">at %1$s</string>
   <string name="reservation_time_remaining">%1$s minutes remaining</string>
-  <string name="version_name">Version {version}</string>
+  <string name="version_name">Version %1$s</string>
 
   <string-array name="zodiac_animals">
     <item>cat</item>

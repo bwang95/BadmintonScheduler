@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/rv_main_nav_drawer"
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"

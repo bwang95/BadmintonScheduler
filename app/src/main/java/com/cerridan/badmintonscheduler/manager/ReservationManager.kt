@@ -2,6 +2,7 @@ package com.cerridan.badmintonscheduler.manager
 
 import androidx.annotation.WorkerThread
 import com.cerridan.badmintonscheduler.api.BadmintonService
+import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.api.model.Reservation
 import com.cerridan.badmintonscheduler.database.dao.ReservationDAO
 import com.cerridan.badmintonscheduler.database.model.ReservationEntity
@@ -41,6 +42,9 @@ class ReservationManager @Inject constructor(
       }
       .map { (error, reservations) -> error to reservations.map(ReservationEntity::reservation) }
       .subscribeOn(Schedulers.io())
+
+  fun createReservation(courtNumber: Int, players: List<Player>, delayMinutes: Int) =
+    badmintonService.registerCourt(courtNumber, players, delayMinutes)
 
   fun deleteReservation(token: String): Single<String> = badmintonService
       .unregisterCourt(token)

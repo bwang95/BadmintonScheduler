@@ -7,12 +7,6 @@
     <item name="drawerArrowStyle">@style/Widget.BadmintonScheduler.DrawerArrow</item>
   </style>
 
-  <style name="Widget.BadmintonScheduler.Divider" parent="android:Widget">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">@dimen/divider_height</item>
-    <item name="android:background">@color/gray_300</item>
-  </style>
-
   <style name="Widget.BadmintonScheduler.DrawerArrow" parent="Widget.AppCompat.DrawerArrowToggle">
     <item name="color">@android:color/white</item>
   </style>

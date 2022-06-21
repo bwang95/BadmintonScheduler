@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +28,7 @@ import com.cerridan.badmintonscheduler.dialog.CourtActionsFragment
 import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.push
 import com.cerridan.badmintonscheduler.util.showDialog
-import com.cerridan.badmintonscheduler.view.CourtItem
+import com.cerridan.badmintonscheduler.ui.CourtItem
 import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel
 import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel.Court
 import io.reactivex.rxjava3.disposables.SerialDisposable
@@ -48,7 +49,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
         .subscribe { viewModel.refresh() }
         .let(foregroundDisposable::set)
 
-    viewModel.errors.observe(this) { event ->
+    viewModel.errors.observe(viewLifecycleOwner) { event ->
       event.value?.let { Toast.makeText(view.context, it, LENGTH_LONG).show() }
     }
 
@@ -62,10 +63,9 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
               courts == null -> Column(
                   modifier = Modifier.fillMaxSize(),
                   verticalArrangement = Arrangement.Center,
-                  horizontalAlignment = Alignment.CenterHorizontally
-              ) {
-                CircularProgressIndicator()
-              }
+                  horizontalAlignment = Alignment.CenterHorizontally,
+                  content = { CircularProgressIndicator() }
+              )
 
               courts.isEmpty() -> Column(
                   modifier = Modifier.fillMaxSize(),
@@ -77,16 +77,16 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
               }
 
               else -> LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(
-                    courts,
-                    key = Court::name,
-                    itemContent = {
-                      Divider()
-                      CourtItem(view.context, it, now) {
-                        showDialog(CourtActionsFragment.create(it.name, it.reservations.first().token))
-                      }
-                    }
-                )
+                items(courts, key = Court::name) {
+                  Divider()
+                  CourtItem(
+                    modifier = Modifier.clickable {
+                      showDialog(CourtActionsFragment.create(it.name, it.reservations.first().token))
+                    },
+                    court = it,
+                    now = now
+                  )
+                }
               }
             }
           },

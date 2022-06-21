@@ -1,111 +1,134 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
-import android.widget.ViewAnimator
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.viewModels
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.adapter.SelectablePlayersAdapter
-import com.cerridan.badmintonscheduler.api.BadmintonService
+import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
-import com.cerridan.badmintonscheduler.util.bindView
-import com.cerridan.badmintonscheduler.util.combineLatest
-import com.cerridan.badmintonscheduler.util.displayedChildId
-import com.cerridan.badmintonscheduler.util.hideKeyboard
-import com.cerridan.badmintonscheduler.util.requestFocusAndShowKeyboard
-import com.jakewharton.rxbinding4.view.clicks
-import com.jakewharton.rxbinding4.widget.textChanges
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
-import javax.inject.Inject
+import com.cerridan.badmintonscheduler.ui.SelectablePlayerItem
+import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel
+import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.IN_PROGRESS
+import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.NOT_STARTED
+import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.SUCCESS
 
-class ReservationFragment : BaseFragment(R.layout.fragment_reservation) {
-  private val courtNumberView: EditText by bindView(R.id.et_reservation_court_number)
-  private val delayTimeView: EditText by bindView(R.id.et_reservation_delay_time)
-  private val playersAnimator: ViewAnimator by bindView(R.id.va_reservation_players_animator)
-  private val playersRecycler: RecyclerView by bindView(R.id.rv_reservation_players_recycler)
-  private val submitButton: Button by bindView(R.id.b_reservation_submit)
-
-  private lateinit var adapter: SelectablePlayersAdapter
-
-  private val progressSubject = BehaviorSubject.createDefault(false)
-
-  @Inject lateinit var service: BadmintonService
-
-  init { DaggerInjector.appComponent.inject(this) }
+class ReservationFragment: BaseComposeFragment<ReservationsViewModel>() {
+  override val viewModel: ReservationsViewModel by viewModels {
+    DaggerInjector.appComponent.viewModelFactory()
+  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    adapter = SelectablePlayersAdapter(view.context)
-    playersRecycler.addItemDecoration(DividerItemDecoration(view.context, VERTICAL))
-    playersRecycler.layoutManager = LinearLayoutManager(view.context)
-    playersRecycler.adapter = adapter
-  }
+    viewModel.refresh()
+    viewModel.errors.observe(viewLifecycleOwner) { event ->
+      event.value?.let { Toast.makeText(view.context, it, LENGTH_LONG).show() }
+    }
 
-  override fun onResume(view: View) {
-    super.onResume(view)
+    (view as ComposeView).setContent {
+      var delayTime by remember { mutableStateOf("") }
+      var courtNumber by remember { mutableStateOf("") }
+      val selectedPlayers = remember { mutableStateMapOf<String, Unit>() }
 
-    courtNumberView.requestFocusAndShowKeyboard()
+      LaunchedEffect(viewModel.requestState) {
+        if (viewModel.requestState == SUCCESS) activity?.onBackPressed()
+      }
 
-    Disposable.fromAction { courtNumberView.hideKeyboard() }
-        .disposeOnPause()
+      Column {
+        Column(Modifier.shadow(dimensionResource(R.dimen.global_elevation))) {
+          Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(stringResource(R.string.reservation_court_number))
 
-    combineLatest(progressSubject, courtNumberView.textChanges(), adapter.observablePlayerSelections.map { Unit }.startWithItem(Unit))
-        .map { (progress, text, _) -> !progress && text.isNotBlank() && adapter.selectedPlayers.isNotEmpty() }
-        .subscribe(submitButton::setEnabled)
-        .disposeOnPause()
+            TextField(
+              value = courtNumber,
+              onValueChange = { courtNumber = it }
+            )
+          }
 
-    progressSubject
-        .subscribe { inProgress ->
-          playersRecycler.isLayoutFrozen = inProgress
-          courtNumberView.isEnabled = !inProgress
-          delayTimeView.isEnabled = !inProgress
-        }
-        .disposeOnPause()
+          Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(stringResource(R.string.reservation_delay_time))
 
-    service.getPlayers()
-        .doOnSubscribe { playersAnimator.displayedChildId = R.id.pb_reservation_players }
-        .map { response ->
-          response.error to (response.players?.filter { it.hasActiveReservation != true } ?: emptyList())
-        }
-        .doOnSuccess { (_, players) ->
-          playersAnimator.displayedChildId = if (players.isNullOrEmpty()) {
-            R.id.ll_reservation_empty
-          } else {
-            R.id.rv_reservation_players_recycler
+            TextField(
+              value = delayTime,
+              onValueChange = { delayTime = it }
+            )
           }
         }
-        .subscribe { (error, players) ->
-          error?.also { Toast.makeText(view.context, it, LENGTH_LONG).show() }
-          adapter.setPlayers(players)
-        }
-        .disposeOnPause()
 
-    submitButton.clicks()
-        .switchMapSingle {
-          service.registerCourt(
-              courtNumber = courtNumberView.text.toString().toInt(),
-              players = adapter.selectedPlayers,
-              delayMinutes = if (delayTimeView.text.isBlank()) 0 else delayTimeView.text.toString().toInt()
-          )
-          .doOnSubscribe { progressSubject.onNext(true) }
-        }
-        .subscribe { response ->
-          response.error
-              ?.also {
-                progressSubject.onNext(false)
-                Toast.makeText(view.context, it, LENGTH_LONG).show()
+        Column(
+          modifier = Modifier.weight(1f),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.Center
+        ) {
+          val availablePlayers = viewModel.availablePlayers
+          when {
+            viewModel.requestState == IN_PROGRESS -> CircularProgressIndicator()
+            availablePlayers.isNullOrEmpty() -> {
+              Icon(
+                painter = painterResource(R.drawable.icon_shuttle),
+                contentDescription = null
+              )
+              Text(stringResource(R.string.reservation_players_empty))
+            }
+            else -> LazyColumn {
+              items(availablePlayers, key = Player::name) { player ->
+                SelectablePlayerItem(
+                  name = player.name,
+                  password = player.password,
+                  checked = selectedPlayers.containsKey(player.name),
+                  onCheckedChanged = { checked ->
+                    if (checked) {
+                      selectedPlayers[player.name] = Unit
+                    } else {
+                      selectedPlayers.remove(player.name)
+                    }
+                  }
+                )
               }
-              ?: activity?.onBackPressed()
+            }
+          }
         }
-        .disposeOnPause()
+        
+        Button(
+          enabled = viewModel.requestState == NOT_STARTED,
+          onClick = {
+            viewModel.submitReservation(
+              courtNumber = courtNumber.toInt(),
+              players = emptyList(), // tODO
+              delayMinutes = delayTime
+                .takeIf(String::isNotBlank)
+                ?.toInt()
+                ?: 0
+            )
+          },
+          content = { Text(stringResource(R.string.reservation_register)) }
+        )
+      }
+    }
   }
 }

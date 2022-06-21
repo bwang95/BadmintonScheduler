@@ -5,10 +5,8 @@ import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.manager.ReservationManager
-import com.squareup.phrase.Phrase
 import javax.inject.Inject
 
 class CourtActionsFragment : BaseAlertDialogFragment() {
@@ -31,9 +29,10 @@ class CourtActionsFragment : BaseAlertDialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(requireContext())
       .setTitle(
-          Phrase.from(context, R.string.court_actions_title)
-              .put("court", arguments?.getString(KEY_COURT_NUMBER)?.toString() ?: "")
-              .format()
+        resources.getString(
+          R.string.court_actions_title,
+          arguments?.getString(KEY_COURT_NUMBER) ?: ""
+        )
       )
       .setMessage(R.string.court_actions_message)
       .setPositiveButton(R.string.court_actions_remove, null)

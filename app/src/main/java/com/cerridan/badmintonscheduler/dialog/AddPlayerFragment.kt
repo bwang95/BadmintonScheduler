@@ -1,32 +1,36 @@
 package com.cerridan.badmintonscheduler.dialog
 
 import android.os.Bundle
-import com.google.android.material.textfield.TextInputEditText
 import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
-import android.widget.Spinner
+import android.view.View
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringArrayResource
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.adapter.PasswordsAdapter
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
-import com.cerridan.badmintonscheduler.util.bindView
 import com.cerridan.badmintonscheduler.util.combineLatest
-import com.cerridan.badmintonscheduler.util.hideKeyboard
-import com.cerridan.badmintonscheduler.util.requestFocusAndShowKeyboard
-import com.jakewharton.rxbinding4.widget.itemSelections
-import com.jakewharton.rxbinding4.widget.textChanges
-import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
 class AddPlayerFragment : BaseAlertDialogFragment() {
-  private val nameView: TextInputEditText by bindView(R.id.et_add_player_name)
-  private val passwordSpinner: Spinner by bindView(R.id.s_add_player_password)
-
   @Inject lateinit var service: BadmintonService
 
   private val progressSubject = BehaviorSubject.createDefault(false)
+  private val isInputValid = BehaviorSubject.createDefault(false)
+  private val name = mutableStateOf("")
+  private val password = mutableStateOf("")
+  private val error = mutableStateOf("")
 
   init { DaggerInjector.appComponent.inject(this) }
 
@@ -34,26 +38,39 @@ class AddPlayerFragment : BaseAlertDialogFragment() {
     savedInstanceState: Bundle?
   ): AlertDialog = AlertDialog.Builder(requireContext())
       .setTitle(R.string.add_player_title)
-      .setView(LayoutInflater.from(context).inflate(R.layout.dialog_add_player, null))
+      .setView(ComposeView(requireContext()))
       .setPositiveButton(R.string.add_player_add, null)
       .setNegativeButton(R.string.add_player_cancel, null)
       .create()
 
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?
+  ) = (view as ComposeView).setContent {
+    var isPasswordExpanded by remember { mutableStateOf(false) }
+
+    TextField(
+      value = name.value,
+      isError = error.value.isNotBlank(),
+      onValueChange = { name.value = it }
+    )
+    Box {
+      Text(password.value)
+      DropdownMenu(
+        expanded = isPasswordExpanded,
+        onDismissRequest = { isPasswordExpanded = false },
+        content = { stringArrayResource(R.array.zodiac_animals).forEach { Text(it) } }
+      )
+    }
+
+    LaunchedEffect(name.value, password.value) {
+      isInputValid.onNext(name.value.isNotBlank() && password.value.isNotBlank())
+    }
+  }
+
   override fun onResume(dialog: AlertDialog) {
-    val acceptablePasswords = resources.getStringArray(R.array.zodiac_animals)
-    val adapter = PasswordsAdapter(dialog.context)
-
-    passwordSpinner.adapter = adapter
-
-    adapter.setData(R.string.add_player_hint_password, acceptablePasswords.asList())
-
-    nameView.requestFocusAndShowKeyboard()
-
-    Disposable.fromAction { nameView.hideKeyboard() }
-        .disposeOnPause()
-
-    combineLatest(progressSubject, nameView.textChanges(), passwordSpinner.itemSelections())
-        .map { (progress, text, selection) -> !progress && text.isNotBlank() && !adapter.isPlaceholder(selection) }
+    combineLatest(progressSubject, isInputValid)
+        .map { (progress, valid) -> !progress && valid }
         .subscribe(positiveButton::setEnabled)
         .disposeOnPause()
 
@@ -66,15 +83,14 @@ class AddPlayerFragment : BaseAlertDialogFragment() {
 
     positiveButtonClicks
         .filter { isCancelable }
-        .map { nameView.text.toString().toLowerCase() to passwordSpinner.selectedItemPosition }
-        .switchMapSingle { (name, position) ->
-          service.addPlayer(Player(name, adapter.getItem(position)))
+        .switchMapSingle {
+          service.addPlayer(Player(name.value, password.value))
               .doOnSubscribe { progressSubject.onNext(true) }
         }
         .subscribe { response ->
           response.error
               ?.also {
-                nameView.error = it
+                error.value = it
                 progressSubject.onNext(false)
               }
               ?: dismiss()
