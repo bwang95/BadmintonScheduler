@@ -17,6 +17,7 @@ import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescripto
 import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor.COURTS
 import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor.PLAYERS
 import com.cerridan.badmintonscheduler.fragment.PlayersFragment
+import com.cerridan.badmintonscheduler.ui.AppTheme
 import com.cerridan.badmintonscheduler.ui.DrawerItem
 import com.cerridan.badmintonscheduler.ui.VersionItem
 
@@ -41,21 +42,23 @@ class MainActivity : AppCompatActivity() {
     toggle.syncState()
 
     drawer.setContent {
-      LazyColumn {
-        item { VersionItem(version = BuildConfig.VERSION_NAME) }
-        items(DrawerNavigableFragmentDescriptor.values()) {
-          DrawerItem(
-            modifier = Modifier.clickable {
-              supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_main_fragment_container, it.newFragment())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .commit()
-                drawerLayout.close()
-            },
-            iconRes = it.icon,
-            textRes = it.label
-          )
+      AppTheme {
+        LazyColumn {
+          item { VersionItem(version = BuildConfig.VERSION_NAME) }
+          items(DrawerNavigableFragmentDescriptor.values()) {
+            DrawerItem(
+                modifier = Modifier.clickable {
+                  supportFragmentManager.beginTransaction()
+                      .replace(R.id.fl_main_fragment_container, it.newFragment())
+                      .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                      .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                      .commit()
+                  drawerLayout.close()
+                },
+                iconRes = it.icon,
+                textRes = it.label
+            )
+          }
         }
       }
     }

@@ -23,13 +23,15 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
-import com.cerridan.badmintonscheduler.R
+import com.cerridan.badmintonscheduler.R.drawable
+import com.cerridan.badmintonscheduler.R.string
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.dialog.CourtActionsFragment
+import com.cerridan.badmintonscheduler.ui.AppTheme
+import com.cerridan.badmintonscheduler.ui.CourtItem
 import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.push
 import com.cerridan.badmintonscheduler.util.showDialog
-import com.cerridan.badmintonscheduler.ui.CourtItem
 import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel
 import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel.Court
 import io.reactivex.rxjava3.disposables.SerialDisposable
@@ -55,57 +57,59 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
     }
 
     (view as ComposeView).setContent {
-      val now = Date()
-      val courts = viewModel.courts
+      AppTheme {
+        val now = Date()
+        val courts = viewModel.courts
 
-      Scaffold(
-          content = {
-            when {
-              courts == null -> Column(
-                  modifier = Modifier
-                      .padding(it)
-                      .fillMaxSize(),
-                  verticalArrangement = Arrangement.Center,
-                  horizontalAlignment = Alignment.CenterHorizontally,
-                  content = { CircularProgressIndicator() }
-              )
+        Scaffold(
+            content = {
+              when {
+                courts == null -> Column(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    content = { CircularProgressIndicator() }
+                )
 
-              courts.isEmpty() -> Column(
-                  modifier = Modifier
-                      .padding(it)
-                      .fillMaxSize(),
-                  verticalArrangement = Arrangement.Center,
-                  horizontalAlignment = Alignment.CenterHorizontally
-              ) {
-                Icon(painterResource(R.drawable.icon_court), stringResource(R.string.courts_empty))
-                Text(stringResource(R.string.courts_empty))
-              }
+                courts.isEmpty() -> Column(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                  Icon(painterResource(drawable.icon_court), stringResource(string.courts_empty))
+                  Text(stringResource(string.courts_empty))
+                }
 
-              else -> LazyColumn(
-                  Modifier
-                      .padding(it)
-                      .fillMaxSize()
-              ) {
-                items(courts, key = Court::name) { court ->
-                  Divider()
-                  CourtItem(
-                    modifier = Modifier.clickable {
-                      showDialog(CourtActionsFragment.create(court.name, court.reservations.first().token))
-                    },
-                    court = court,
-                    now = now
-                  )
+                else -> LazyColumn(
+                    Modifier
+                        .padding(it)
+                        .fillMaxSize()
+                ) {
+                  items(courts, key = Court::name) { court ->
+                    Divider()
+                    CourtItem(
+                        modifier = Modifier.clickable {
+                          showDialog(CourtActionsFragment.create(court.name, court.reservations.first().token))
+                        },
+                        court = court,
+                        now = now
+                    )
+                  }
                 }
               }
+            },
+            floatingActionButton = {
+              FloatingActionButton(
+                  onClick = { push(ReservationFragment()) },
+                  content = { Icon(painterResource(drawable.icon_add), contentDescription = "Add") }
+              )
             }
-          },
-          floatingActionButton = {
-            FloatingActionButton(
-                onClick = { push(ReservationFragment()) },
-                content = { Icon(painterResource(R.drawable.icon_add), contentDescription = "Add") }
-            )
-          }
-      )
+        )
+      }
     }
   }
 

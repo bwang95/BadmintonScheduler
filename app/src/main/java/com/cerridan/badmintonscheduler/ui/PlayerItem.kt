@@ -24,8 +24,8 @@ fun PlayerItem(
       modifier = modifier
           .fillMaxWidth()
           .background(MaterialTheme.colors.background)
-          .padding(dimensionResource(dimen.global_padding))
           .clickable(onClick = onClick)
+          .padding(dimensionResource(dimen.global_padding))
   ) {
     Text(modifier = Modifier.weight(4f), text = name)
     Text(modifier = Modifier.weight(4f), text = password)

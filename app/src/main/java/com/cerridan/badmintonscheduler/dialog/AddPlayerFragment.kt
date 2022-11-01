@@ -35,6 +35,7 @@ import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.manager.PlayerManager
+import com.cerridan.badmintonscheduler.ui.AppTheme
 import com.cerridan.badmintonscheduler.util.GlobalPadding
 import com.cerridan.badmintonscheduler.util.combineLatest
 import io.reactivex.rxjava3.disposables.Disposable
@@ -56,7 +57,7 @@ class AddPlayerFragment : BaseAlertDialogFragment() {
     savedInstanceState: Bundle?
   ): AlertDialog = AlertDialog.Builder(requireContext())
       .setTitle(R.string.add_player_title)
-      .setView(ComposeView(requireContext()).apply { setContent { AddPlayerContent() } })
+      .setView(ComposeView(requireContext()).apply { setContent { AppTheme { AddPlayerContent() } } })
       .setPositiveButton(R.string.add_player_add, null)
       .setNegativeButton(R.string.add_player_cancel, null)
       .create()

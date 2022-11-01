@@ -40,6 +40,7 @@ import androidx.fragment.app.viewModels
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
+import com.cerridan.badmintonscheduler.ui.AppTheme
 import com.cerridan.badmintonscheduler.ui.SelectablePlayerItem
 import com.cerridan.badmintonscheduler.util.GlobalPadding
 import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel
@@ -67,103 +68,105 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
     }
 
     (view as ComposeView).setContent {
-      var delayTime by remember { mutableStateOf("") }
-      var courtNumber by remember { mutableStateOf("") }
-      val selectedPlayers = remember { mutableStateMapOf<Player, Unit>() }
-      val isValidInput by remember {
-        derivedStateOf { selectedPlayers.isNotEmpty() && courtNumber.isNotBlank() }
-      }
+      AppTheme {
+        var delayTime by remember { mutableStateOf("") }
+        var courtNumber by remember { mutableStateOf("") }
+        val selectedPlayers = remember { mutableStateMapOf<Player, Unit>() }
+        val isValidInput by remember {
+          derivedStateOf { selectedPlayers.isNotEmpty() && courtNumber.isNotBlank() }
+        }
 
-      LaunchedEffect(viewModel.requestState) {
-        if (viewModel.requestState == SUCCESS) activity?.onBackPressed()
-      }
-
-      Column(
-          modifier = Modifier
-              .fillMaxSize()
-              .background(MaterialTheme.colors.background),
-          horizontalAlignment = Alignment.CenterHorizontally,
-      ) {
-        Row(
-            modifier = Modifier
-                .shadow(GlobalPadding)
-                .background(MaterialTheme.colors.background)
-                .padding(GlobalPadding),
-            horizontalArrangement = Arrangement.spacedBy(GlobalPadding)
-        ) {
-          TextField(
-              modifier = Modifier.weight(0.5f),
-              keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-              value = courtNumber,
-              label = { Text(stringResource(R.string.reservation_court_number)) },
-              onValueChange = { courtNumber = it }
-          )
-
-          TextField(
-              modifier = Modifier.weight(0.5f),
-              keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-              value = delayTime,
-              label = { Text(stringResource(R.string.reservation_delay_time)) },
-              onValueChange = { delayTime = it }
-          )
+        LaunchedEffect(viewModel.requestState) {
+          if (viewModel.requestState == SUCCESS) activity?.onBackPressed()
         }
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
-          val availablePlayers = viewModel.availablePlayers
-          when {
-            viewModel.requestState == IN_PROGRESS -> CircularProgressIndicator()
-            availablePlayers.isNullOrEmpty() -> {
-              Icon(
-                  modifier = Modifier.padding(bottom = GlobalPadding),
-                  painter = painterResource(R.drawable.icon_shuttle),
-                  contentDescription = null
-              )
-              Text(stringResource(R.string.reservation_players_empty))
-            }
-            else -> LazyColumn(Modifier.fillMaxSize()) {
-              items(availablePlayers, key = Player::name) { player ->
-                SelectablePlayerItem(
-                    name = player.name,
-                    password = player.password,
-                    checked = selectedPlayers.containsKey(player),
-                    onCheckedChanged = { checked ->
-                      if (checked) {
-                        selectedPlayers[player] = Unit
-                      } else {
-                        selectedPlayers.remove(player)
-                      }
-                    }
-                )
+          Row(
+              modifier = Modifier
+                  .shadow(GlobalPadding)
+                  .background(MaterialTheme.colors.background)
+                  .padding(GlobalPadding),
+              horizontalArrangement = Arrangement.spacedBy(GlobalPadding)
+          ) {
+            TextField(
+                modifier = Modifier.weight(0.5f),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                value = courtNumber,
+                label = { Text(stringResource(R.string.reservation_court_number)) },
+                onValueChange = { courtNumber = it }
+            )
 
-                Divider()
+            TextField(
+                modifier = Modifier.weight(0.5f),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                value = delayTime,
+                label = { Text(stringResource(R.string.reservation_delay_time)) },
+                onValueChange = { delayTime = it }
+            )
+          }
+
+          Column(
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .weight(1f),
+              horizontalAlignment = Alignment.CenterHorizontally,
+              verticalArrangement = Arrangement.Center
+          ) {
+            val availablePlayers = viewModel.availablePlayers
+            when {
+              viewModel.requestState == IN_PROGRESS -> CircularProgressIndicator()
+              availablePlayers.isNullOrEmpty() -> {
+                Icon(
+                    modifier = Modifier.padding(bottom = GlobalPadding),
+                    painter = painterResource(R.drawable.icon_shuttle),
+                    contentDescription = null
+                )
+                Text(stringResource(R.string.reservation_players_empty))
+              }
+              else -> LazyColumn(Modifier.fillMaxSize()) {
+                items(availablePlayers, key = Player::name) { player ->
+                  SelectablePlayerItem(
+                      name = player.name,
+                      password = player.password,
+                      checked = selectedPlayers.containsKey(player),
+                      onCheckedChanged = { checked ->
+                        if (checked) {
+                          selectedPlayers[player] = Unit
+                        } else {
+                          selectedPlayers.remove(player)
+                        }
+                      }
+                  )
+
+                  Divider()
+                }
               }
             }
           }
-        }
 
-        Button(
-            modifier = Modifier
-                .padding(GlobalPadding)
-                .fillMaxWidth(),
-            enabled = viewModel.requestState == NOT_STARTED && isValidInput,
-            onClick = {
-              viewModel.submitReservation(
-                  courtNumber = courtNumber.toInt(),
-                  players = selectedPlayers.map { (name, _) -> name },
-                  delayMinutes = delayTime
-                      .takeIf(String::isNotBlank)
-                      ?.toInt()
-                      ?: 0
-              )
-            },
-            content = { Text(stringResource(R.string.reservation_register)) }
-        )
+          Button(
+              modifier = Modifier
+                  .padding(GlobalPadding)
+                  .fillMaxWidth(),
+              enabled = viewModel.requestState == NOT_STARTED && isValidInput,
+              onClick = {
+                viewModel.submitReservation(
+                    courtNumber = courtNumber.toInt(),
+                    players = selectedPlayers.map { (name, _) -> name },
+                    delayMinutes = delayTime
+                        .takeIf(String::isNotBlank)
+                        ?.toInt()
+                        ?: 0
+                )
+              },
+              content = { Text(stringResource(R.string.reservation_register)) }
+          )
+        }
       }
     }
   }

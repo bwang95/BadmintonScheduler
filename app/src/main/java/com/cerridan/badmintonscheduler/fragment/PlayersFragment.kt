@@ -6,7 +6,6 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
@@ -30,10 +28,11 @@ import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.dialog.AddPlayerFragment
 import com.cerridan.badmintonscheduler.dialog.RemovePlayerFragment
-import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
-import com.cerridan.badmintonscheduler.util.showDialog
+import com.cerridan.badmintonscheduler.ui.AppTheme
 import com.cerridan.badmintonscheduler.ui.PlayerItem
 import com.cerridan.badmintonscheduler.util.GlobalPadding
+import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
+import com.cerridan.badmintonscheduler.util.showDialog
 import com.cerridan.badmintonscheduler.viewmodel.PlayersViewModel
 import io.reactivex.rxjava3.disposables.SerialDisposable
 
@@ -55,69 +54,71 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
     }
 
     (view as ComposeView).setContent {
-      val players = viewModel.players
+      AppTheme {
+        val players = viewModel.players
 
-      Scaffold(
-          content = {
-            when {
-              players == null -> Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-              ) {
-                CircularProgressIndicator()
-              }
-
-              players.isEmpty() -> Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-              ) {
-                Icon(
-                    modifier = Modifier.padding(bottom = GlobalPadding),
-                    painter = painterResource(R.drawable.icon_shuttle),
-                    contentDescription = "Shuttle"
-                )
-                Text(stringResource(R.string.players_empty))
-              }
-
-              else -> Column(
-                  Modifier
-                      .fillMaxSize()
+        Scaffold(
+            content = {
+              when {
+                players == null -> Column(
+                  modifier = Modifier
                       .padding(it)
-              ) {
-                PlayerItem(
-                  modifier = Modifier.shadow(elevation = GlobalPadding),
-                  name = stringResource(R.string.player_name_header),
-                  password = stringResource(R.string.player_password_header),
-                  court = stringResource(R.string.player_court_header)
-                )
+                      .fillMaxSize(),
+                  horizontalAlignment = Alignment.CenterHorizontally,
+                  verticalArrangement = Arrangement.Center
+                ) {
+                  CircularProgressIndicator()
+                }
 
-                LazyColumn {
-                  items(players, key = Player::name) { player ->
-                    Divider()
-                    PlayerItem(
-                      name = player.name,
-                      password = player.password,
-                      court = player.hasActiveReservation.toString(),
-                      onClick = { showDialog(RemovePlayerFragment.create(player.name)) }
-                    )
+                players.isEmpty() -> Column(
+                  modifier = Modifier
+                      .padding(it)
+                      .fillMaxSize(),
+                  horizontalAlignment = Alignment.CenterHorizontally,
+                  verticalArrangement = Arrangement.Center
+                ) {
+                  Icon(
+                      modifier = Modifier.padding(bottom = GlobalPadding),
+                      painter = painterResource(R.drawable.icon_shuttle),
+                      contentDescription = "Shuttle"
+                  )
+                  Text(stringResource(R.string.players_empty))
+                }
+
+                else -> Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                ) {
+                  PlayerItem(
+                    modifier = Modifier.shadow(elevation = GlobalPadding),
+                    name = stringResource(R.string.player_name_header),
+                    password = stringResource(R.string.player_password_header),
+                    court = stringResource(R.string.player_court_header)
+                  )
+
+                  LazyColumn {
+                    items(players, key = Player::name) { player ->
+                      Divider()
+                      PlayerItem(
+                        name = player.name,
+                        password = player.password,
+                        court = player.hasActiveReservation.toString(),
+                        onClick = { showDialog(RemovePlayerFragment.create(player.name)) }
+                      )
+                    }
                   }
                 }
               }
+            },
+            floatingActionButton = {
+              FloatingActionButton(
+                onClick = { showDialog(AddPlayerFragment()) },
+                content = { Icon(painterResource(R.drawable.icon_add), contentDescription = "Add") }
+              )
             }
-          },
-          floatingActionButton = {
-            FloatingActionButton(
-              onClick = { showDialog(AddPlayerFragment()) },
-              content = { Icon(painterResource(R.drawable.icon_add), contentDescription = "Add") }
-            )
-          }
-      )
+        )
+      }
     }
   }
 
