@@ -4,7 +4,7 @@ buildscript {
     ext {
         kotlin_version = '1.7.20'
         major_version = 0
-        minor_version = 8
+        minor_version = 9
     }
 
     repositories {
