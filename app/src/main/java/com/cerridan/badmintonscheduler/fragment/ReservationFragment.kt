@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
@@ -33,6 +34,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.KeyboardType.Companion
 import androidx.fragment.app.viewModels
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.model.Player
@@ -90,6 +93,7 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
         ) {
           TextField(
               modifier = Modifier.weight(0.5f),
+              keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
               value = courtNumber,
               label = { Text(stringResource(R.string.reservation_court_number)) },
               onValueChange = { courtNumber = it }
@@ -97,6 +101,7 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
 
           TextField(
               modifier = Modifier.weight(0.5f),
+              keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
               value = delayTime,
               label = { Text(stringResource(R.string.reservation_delay_time)) },
               onValueChange = { delayTime = it }
