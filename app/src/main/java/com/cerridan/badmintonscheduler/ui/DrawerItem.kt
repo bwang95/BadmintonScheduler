@@ -3,6 +3,7 @@ package com.cerridan.badmintonscheduler.ui
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -21,7 +22,9 @@ fun DrawerItem(
   @DrawableRes iconRes: Int,
   @StringRes textRes: Int
 ) = Row(
-  modifier = modifier.padding(dimensionResource(R.dimen.global_padding)),
+  modifier = modifier
+      .fillMaxWidth()
+      .padding(dimensionResource(R.dimen.global_padding)),
   verticalAlignment = Alignment.CenterVertically
 ) {
   Icon(
@@ -32,6 +35,6 @@ fun DrawerItem(
   Text(
     modifier = Modifier.padding(start = dimensionResource(R.dimen.global_padding)),
     text = stringResource(textRes),
-    style = MaterialTheme.typography.h2
+    style = MaterialTheme.typography.h5
   )
 }

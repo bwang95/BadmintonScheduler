@@ -1,10 +1,7 @@
 package com.cerridan.badmintonscheduler.api
 
 import com.cerridan.badmintonscheduler.api.model.Player
-import com.cerridan.badmintonscheduler.api.request.CourtNumberRequest
-import com.cerridan.badmintonscheduler.api.request.DeletePlayerRequest
 import com.cerridan.badmintonscheduler.api.request.RegisterCourtRequest
-import com.cerridan.badmintonscheduler.api.request.UnregisterCourtRequest
 import com.cerridan.badmintonscheduler.api.response.CourtsResponse
 import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.api.response.PlayersResponse
@@ -22,6 +19,9 @@ interface BadmintonAPI {
 
   @POST("courts")
   fun registerCourt(@Body request: RegisterCourtRequest): Single<GenericResponse>
+
+  @DELETE("courts/reset/{id}")
+  fun resetCourt(@Path("id") courtNumber: String): Single<GenericResponse>
 
   @DELETE("courts/{id}")
   fun unregisterCourt(@Path("id") reservationToken: String): Single<GenericResponse>

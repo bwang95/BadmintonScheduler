@@ -7,6 +7,7 @@ import android.widget.Toast.LENGTH_LONG
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
+import com.cerridan.badmintonscheduler.manager.PlayerManager
 import javax.inject.Inject
 
 class RemovePlayerFragment : BaseAlertDialogFragment() {
@@ -17,7 +18,7 @@ class RemovePlayerFragment : BaseAlertDialogFragment() {
         .apply { arguments = Bundle().apply { putString(KEY_PLAYER_NAME, playerName) } }
   }
 
-  @Inject lateinit var service: BadmintonService
+  @Inject lateinit var playerManager: PlayerManager
 
   init { DaggerInjector.appComponent.inject(this) }
 
@@ -39,16 +40,16 @@ class RemovePlayerFragment : BaseAlertDialogFragment() {
     positiveButtonClicks
         .filter { isCancelable }
         .switchMapSingle {
-          service.removePlayer(playerName)
+          playerManager.removePlayer(playerName)
               .doOnSubscribe { isCancelable = false }
         }
-        .subscribe { response ->
-          response.error
-              ?.also {
-                isCancelable = true
-                Toast.makeText(dialog.context, it, LENGTH_LONG).show()
-              }
-              ?: dismiss()
+        .subscribe {
+          isCancelable = true
+          if (it.isNotBlank()) {
+            Toast.makeText(dialog.context, it, LENGTH_LONG).show()
+          } else {
+            dismiss()
+          }
         }
         .disposeOnPause()
 

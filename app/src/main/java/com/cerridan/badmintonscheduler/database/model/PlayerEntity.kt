@@ -7,8 +7,7 @@ import com.cerridan.badmintonscheduler.api.model.Player
 
 @Entity(tableName = "players")
 class PlayerEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long = 0,
-    @ColumnInfo(name = "name", index = true) val name: String,
+    @PrimaryKey @ColumnInfo(name = "name", index = true) val name: String,
     @ColumnInfo(name = "password") val password: String,
     @ColumnInfo(name = "court") val court: String
 ) {
@@ -16,7 +15,7 @@ class PlayerEntity(
         get() = Player(
             name = name,
             password = password,
-            hasActiveReservation = court.isNotEmpty()
+            hasActiveReservation = court == "true"
         )
 
     constructor(player: Player) : this(

@@ -29,10 +29,10 @@
   <string name="remove_player_confirm">Remove</string>
   <string name="remove_player_message">Remove player %1$s?</string>
   <string name="remove_player_title">Remove Player</string>
-  <string name="reservation_court_number">Court Number</string>
+  <string name="reservation_court_number">Court #</string>
   <string name="reservation_court_number_error">Court Number cannot be blank</string>
   <string name="reservation_court_number_hint">000</string>
-  <string name="reservation_delay_time">Delay Time (minutes)</string>
+  <string name="reservation_delay_time">Delay (min)</string>
   <string name="reservation_players_empty">No available players!</string>
   <string name="reservation_players_error">You must select at least one player.</string>
   <string name="reservation_register">Register</string>
@@ -55,5 +55,7 @@
     <item>rooster</item>
     <item>snake</item>
     <item>tiger</item>
+    <item>low</item>
+    <item>bee</item>
   </string-array>
 </resources>

@@ -22,6 +22,16 @@ class PlayerManager @Inject constructor(
 
   private var lastUpdate = AtomicReference(Date(0))
 
+  fun addPlayer(player: Player): Single<String> = badmintonService
+      .addPlayer(player)
+      .doOnSuccess { setShouldUpdate() }
+      .map { response -> response.error ?: "" }
+
+  fun removePlayer(name: String): Single<String> = badmintonService
+      .removePlayer(name)
+      .doOnSuccess { setShouldUpdate() }
+      .map { response -> response.error ?: "" }
+
   fun getPlayers(forceUpdate: Boolean = false): Single<Pair<String, List<Player>>> = Single
       .fromCallable { forceUpdate || lastUpdate.get() < Date(Date().time - UPDATE_INTERVAL_MILLIS) }
       .flatMap { shouldUpdate ->

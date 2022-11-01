@@ -51,6 +51,10 @@ class BadmintonService(
       .unregisterCourt(reservationToken)
       .handleErrorsOnMainThread(::GenericResponse)
 
+  fun resetCourt(courtNumber: String) = api
+      .resetCourt(courtNumber)
+      .handleErrorsOnMainThread(::GenericResponse)
+
   // Players
   fun getPlayers() = api
       .getPlayers()

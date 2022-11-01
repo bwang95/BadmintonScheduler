@@ -7,6 +7,7 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
@@ -31,6 +32,7 @@ import com.cerridan.badmintonscheduler.dialog.RemovePlayerFragment
 import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.showDialog
 import com.cerridan.badmintonscheduler.ui.PlayerItem
+import com.cerridan.badmintonscheduler.util.GlobalPadding
 import com.cerridan.badmintonscheduler.viewmodel.PlayersViewModel
 import io.reactivex.rxjava3.disposables.SerialDisposable
 
@@ -58,7 +60,9 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
           content = {
             when {
               players == null -> Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
               ) {
@@ -66,7 +70,9 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
               }
 
               players.isEmpty() -> Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
               ) {
@@ -74,22 +80,26 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
                 Text(stringResource(R.string.players_empty))
               }
 
-              else -> Column(modifier = Modifier.fillMaxSize()) {
+              else -> Column(
+                  Modifier
+                      .fillMaxSize()
+                      .padding(it)
+              ) {
                 PlayerItem(
-                  modifier = Modifier.shadow(elevation = dimensionResource(R.dimen.global_elevation)),
+                  modifier = Modifier.shadow(elevation = GlobalPadding),
                   name = stringResource(R.string.player_name_header),
                   password = stringResource(R.string.player_password_header),
                   court = stringResource(R.string.player_court_header)
                 )
 
                 LazyColumn {
-                  items(players, key = Player::name) {
+                  items(players, key = Player::name) { player ->
                     Divider()
                     PlayerItem(
-                      name = it.name,
-                      password = it.password,
-                      court = it.hasActiveReservation.toString(),
-                      onClick = { showDialog(RemovePlayerFragment.create(it.name)) }
+                      name = player.name,
+                      password = player.password,
+                      court = player.hasActiveReservation.toString(),
+                      onClick = { showDialog(RemovePlayerFragment.create(player.name)) }
                     )
                   }
                 }

@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .commit()
+                drawerLayout.close()
             },
             iconRes = it.icon,
             textRes = it.label

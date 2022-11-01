@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
@@ -61,14 +62,18 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
           content = {
             when {
               courts == null -> Column(
-                  modifier = Modifier.fillMaxSize(),
+                  modifier = Modifier
+                      .padding(it)
+                      .fillMaxSize(),
                   verticalArrangement = Arrangement.Center,
                   horizontalAlignment = Alignment.CenterHorizontally,
                   content = { CircularProgressIndicator() }
               )
 
               courts.isEmpty() -> Column(
-                  modifier = Modifier.fillMaxSize(),
+                  modifier = Modifier
+                      .padding(it)
+                      .fillMaxSize(),
                   verticalArrangement = Arrangement.Center,
                   horizontalAlignment = Alignment.CenterHorizontally
               ) {
@@ -76,14 +81,18 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
                 Text(stringResource(R.string.courts_empty))
               }
 
-              else -> LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(courts, key = Court::name) {
+              else -> LazyColumn(
+                  Modifier
+                      .padding(it)
+                      .fillMaxSize()
+              ) {
+                items(courts, key = Court::name) { court ->
                   Divider()
                   CourtItem(
                     modifier = Modifier.clickable {
-                      showDialog(CourtActionsFragment.create(it.name, it.reservations.first().token))
+                      showDialog(CourtActionsFragment.create(court.name, court.reservations.first().token))
                     },
-                    court = it,
+                    court = court,
                     now = now
                   )
                 }

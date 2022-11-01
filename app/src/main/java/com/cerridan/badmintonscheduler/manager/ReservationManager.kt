@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.api.model.Reservation
+import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.database.dao.ReservationDAO
 import com.cerridan.badmintonscheduler.database.model.ReservationEntity
 import io.reactivex.rxjava3.core.Single
@@ -15,10 +16,11 @@ import javax.inject.Inject
 
 class ReservationManager @Inject constructor(
   private val badmintonService: BadmintonService,
+  private val playerManager: PlayerManager,
   private val reservationDao: ReservationDAO
 ) {
   companion object {
-    val COURT_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(45)
+    val COURT_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(30)
     private val UPDATE_INTERVAL_MILLIS = TimeUnit.MINUTES.toMillis(5)
   }
 
@@ -43,13 +45,25 @@ class ReservationManager @Inject constructor(
       .map { (error, reservations) -> error to reservations.map(ReservationEntity::reservation) }
       .subscribeOn(Schedulers.io())
 
+  fun resetCourt(courtNumber: String): Single<String> = badmintonService
+      .resetCourt(courtNumber)
+      .doOnSuccess { setShouldUpdate() }
+      .map { it.error ?: "" }
+
   fun createReservation(courtNumber: Int, players: List<Player>, delayMinutes: Int) =
-    badmintonService.registerCourt(courtNumber, players, delayMinutes)
+    badmintonService
+        .registerCourt(courtNumber, players, delayMinutes)
+        .doOnSuccess { setShouldUpdate() }
 
   fun deleteReservation(token: String): Single<String> = badmintonService
       .unregisterCourt(token)
-      .doOnSuccess { lastUpdate.set(Date(0)) }
+      .doOnSuccess { setShouldUpdate() }
       .map { it.error ?: "" }
+
+  fun setShouldUpdate() {
+    playerManager.setShouldUpdate()
+    lastUpdate.set(Date(0))
+  }
 
   @WorkerThread
   private fun updateReservationDatabase(reservations: List<Reservation>) {

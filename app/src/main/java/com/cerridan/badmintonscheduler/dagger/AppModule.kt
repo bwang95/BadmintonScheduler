@@ -66,8 +66,11 @@ class AppModule(private val app: Application) {
   @Provides @Singleton fun provideReservationDao(database: BadmintonDatabase) =
       database.reservationDao()
 
-  @Provides @Singleton fun provideReservationManager(service: BadmintonService, dao: ReservationDAO) =
-      ReservationManager(service, dao)
+  @Provides @Singleton fun provideReservationManager(
+    service: BadmintonService,
+    playerManager: PlayerManager,
+    dao: ReservationDAO
+  ) = ReservationManager(service, playerManager, dao)
 
   @Provides @Singleton fun providePlayerManager(service: BadmintonService, dao: PlayerDAO) =
       PlayerManager(service, dao)

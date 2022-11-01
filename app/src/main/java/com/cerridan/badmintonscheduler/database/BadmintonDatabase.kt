@@ -12,7 +12,8 @@ import com.cerridan.badmintonscheduler.database.model.ReservationEntity
     entities = [
         PlayerEntity::class,
         ReservationEntity::class
-    ]
+    ],
+    exportSchema = false
 )
 abstract class BadmintonDatabase : RoomDatabase() {
   companion object {

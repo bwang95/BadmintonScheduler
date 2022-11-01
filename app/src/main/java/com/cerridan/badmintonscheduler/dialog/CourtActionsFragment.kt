@@ -41,7 +41,7 @@ class CourtActionsFragment : BaseAlertDialogFragment() {
       .create()
 
   override fun onResume(dialog: AlertDialog) {
-    val courtNumber = requireArguments().getString(KEY_COURT_NUMBER)
+    val courtNumber = requireArguments().getString(KEY_COURT_NUMBER) ?: ""
     val reservationToken = requireArguments().getString(KEY_RESERVATION_TOKEN) ?: ""
 
     positiveButtonClicks
@@ -60,21 +60,21 @@ class CourtActionsFragment : BaseAlertDialogFragment() {
         }
         .disposeOnPause()
 
-//    negativeButtonClicks
-//        .filter { isCancelable }
-//        .switchMapSingle {
-//          service.resetCourt(courtNumber)
-//              .doOnSubscribe { isCancelable = false }
-//        }
-//        .subscribe { response ->
-//          response.error
-//              ?.also {
-//                Toast.makeText(dialog.context, it, LENGTH_LONG).show()
-//                isCancelable = true
-//              }
-//              ?: dismiss()
-//        }
-//        .disposeOnPause()
+    negativeButtonClicks
+        .filter { isCancelable }
+        .switchMapSingle {
+          manager.resetCourt(courtNumber)
+              .doOnSubscribe { isCancelable = false }
+        }
+        .subscribe { error ->
+          error.takeIf(String::isNotBlank)
+              ?.let {
+                Toast.makeText(dialog.context, it, LENGTH_LONG).show()
+                isCancelable = true
+              }
+              ?: dismiss()
+        }
+        .disposeOnPause()
 
     neutralButtonClicks
         .filter { isCancelable }
