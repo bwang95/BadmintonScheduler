@@ -15,7 +15,7 @@
   <string name="court_actions_title">Court %1$s</string>
   <string name="court_item_number">Court %1$s</string>
   <string name="court_item_time">%1$s minutes (%2$s)</string>
-  <string name="courts_empty">You don\'t seem to have any courts at the moment.</string>
+  <string name="courts_empty">No courts yet.</string>
   <string name="courts_title">Courts</string>
   <string name="drawer_closed">Drawer Closed</string>
   <string name="drawer_item_content_description">View Icon</string>
