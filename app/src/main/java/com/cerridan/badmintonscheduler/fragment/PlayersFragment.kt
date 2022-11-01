@@ -6,6 +6,7 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -76,7 +77,11 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
               ) {
-                Icon(painterResource(R.drawable.icon_shuttle), contentDescription = "Shuttle")
+                Icon(
+                    modifier = Modifier.padding(bottom = GlobalPadding),
+                    painter = painterResource(R.drawable.icon_shuttle),
+                    contentDescription = "Shuttle"
+                )
                 Text(stringResource(R.string.players_empty))
               }
 
