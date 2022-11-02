@@ -15,12 +15,12 @@ class PlayerEntity(
         get() = Player(
             name = name,
             password = password,
-            hasActiveReservation = court == "true"
+            court = court
         )
 
     constructor(player: Player) : this(
         name = player.name,
         password = player.password,
-        court = player.hasActiveReservation.toString()
+        court = player.court ?: ""
     )
 }

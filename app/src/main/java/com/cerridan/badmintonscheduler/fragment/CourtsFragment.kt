@@ -36,6 +36,7 @@ import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel
 import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel.Court
 import io.reactivex.rxjava3.disposables.SerialDisposable
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
 
@@ -48,6 +49,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
     super.onViewCreated(view, savedInstanceState)
 
     observableForegroundBackstackState
+        .delay(250L, TimeUnit.MILLISECONDS)
         .filter { it }
         .subscribe { viewModel.refresh() }
         .let(foregroundDisposable::set)

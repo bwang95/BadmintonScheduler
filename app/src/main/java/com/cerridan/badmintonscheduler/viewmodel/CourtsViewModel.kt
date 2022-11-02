@@ -1,5 +1,6 @@
 package com.cerridan.badmintonscheduler.viewmodel
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class CourtsViewModel @Inject constructor(
   private val manager: ReservationManager
 ) : BaseViewModel() {
+  @Immutable
   data class Court(
     val name: String,
     val reservations: List<Reservation>

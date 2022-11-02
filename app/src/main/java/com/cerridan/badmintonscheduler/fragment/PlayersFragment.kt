@@ -35,6 +35,7 @@ import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
 import com.cerridan.badmintonscheduler.util.showDialog
 import com.cerridan.badmintonscheduler.viewmodel.PlayersViewModel
 import io.reactivex.rxjava3.disposables.SerialDisposable
+import java.util.concurrent.TimeUnit
 
 class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
   private val foregroundDisposable = SerialDisposable()
@@ -46,6 +47,7 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
     super.onViewCreated(view, savedInstanceState)
 
     observableForegroundBackstackState
+        .delay(250L, TimeUnit.MILLISECONDS)
         .subscribe { viewModel.refresh() }
         .let(foregroundDisposable::set)
 
@@ -65,10 +67,9 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
                       .padding(it)
                       .fillMaxSize(),
                   horizontalAlignment = Alignment.CenterHorizontally,
-                  verticalArrangement = Arrangement.Center
-                ) {
-                  CircularProgressIndicator()
-                }
+                  verticalArrangement = Arrangement.Center,
+                  content = { CircularProgressIndicator() }
+                )
 
                 players.isEmpty() -> Column(
                   modifier = Modifier
@@ -103,7 +104,7 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
                       PlayerItem(
                         name = player.name,
                         password = player.password,
-                        court = player.hasActiveReservation.toString(),
+                        court = player.court ?: "",
                         onClick = { showDialog(RemovePlayerFragment.create(player.name)) }
                       )
                     }
