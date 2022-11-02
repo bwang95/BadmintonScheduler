@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
     DaggerInjector.appComponent.viewModelFactory()
   }
 
+  @OptIn(ExperimentalFoundationApi::class)
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
@@ -92,14 +94,16 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
                         .fillMaxSize()
                 ) {
                   items(courts, key = Court::name) { court ->
-                    Divider()
-                    CourtItem(
-                        modifier = Modifier.clickable {
-                          showDialog(CourtActionsFragment.create(court.name, court.reservations.first().token))
-                        },
-                        court = court,
-                        now = now
-                    )
+                    Column(Modifier.animateItemPlacement()) {
+                      Divider()
+                      CourtItem(
+                          modifier = Modifier.clickable {
+                            showDialog(CourtActionsFragment.create(court.name, court.reservations.first().token))
+                          },
+                          court = court,
+                          now = now
+                      )
+                    }
                   }
                 }
               }

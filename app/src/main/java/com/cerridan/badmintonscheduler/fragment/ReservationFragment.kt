@@ -96,6 +96,7 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
             TextField(
                 modifier = Modifier.weight(0.5f),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                maxLines = 1,
                 value = courtNumber,
                 label = { Text(stringResource(R.string.reservation_court_number)) },
                 onValueChange = { courtNumber = it }
@@ -104,6 +105,7 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
             TextField(
                 modifier = Modifier.weight(0.5f),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                maxLines = 1,
                 value = delayTime,
                 label = { Text(stringResource(R.string.reservation_delay_time)) },
                 onValueChange = { delayTime = it }

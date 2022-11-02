@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +44,7 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
     DaggerInjector.appComponent.viewModelFactory()
   }
 
+  @OptIn(ExperimentalFoundationApi::class)
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
@@ -100,13 +102,15 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
 
                   LazyColumn {
                     items(players, key = Player::name) { player ->
-                      Divider()
-                      PlayerItem(
-                        name = player.name,
-                        password = player.password,
-                        court = player.court ?: "",
-                        onClick = { showDialog(RemovePlayerFragment.create(player.name)) }
-                      )
+                      Column(Modifier.animateItemPlacement()) {
+                        Divider()
+                        PlayerItem(
+                            name = player.name,
+                            password = player.password,
+                            court = player.court ?: "",
+                            onClick = { showDialog(RemovePlayerFragment.create(player.name)) }
+                        )
+                      }
                     }
                   }
                 }

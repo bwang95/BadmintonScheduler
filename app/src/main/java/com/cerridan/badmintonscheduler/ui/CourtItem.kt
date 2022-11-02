@@ -37,8 +37,13 @@ fun CourtItem(
 
     val startsAt = court.reservations.first().startsAt
     val expiry = court.reservations.last().endsAt
-    val minutes = TimeUnit.MILLISECONDS.toMinutes(expiry.time - startsAt.time)
-    val hasGaps = ((expiry.time - startsAt.time) / COURT_DURATION_MILLIS.toFloat()).roundToInt() < court.reservations.size
+    val hasGaps = ((expiry.time - startsAt.time) / COURT_DURATION_MILLIS.toFloat()) > court.reservations.size
+
+    val minutes = if (startsAt.after(now)) {
+      TimeUnit.MILLISECONDS.toMinutes(expiry.time - startsAt.time)
+    } else {
+      TimeUnit.MILLISECONDS.toMinutes(expiry.time - now.time)
+    }
 
     val timeText = if (startsAt.time < now.time) {
       stringResource(R.string.court_item_in_progress, minutes, expiry.formatTime(LocalContext.current))
