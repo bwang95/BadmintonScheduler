@@ -33,7 +33,7 @@ class ReservationsViewModel @Inject constructor(
     playerManager.getPlayers()
       .doOnSubscribe { requestState = IN_PROGRESS }
       .subscribe { (error, players) ->
-        this.availablePlayers = players.filter { it.hasActiveReservation != true }
+        this.availablePlayers = players.filter { it.court.isNullOrBlank() }
         if (error.isNotBlank()) mutableErrors.postValue(SingleUseEvent(error))
         requestState = NOT_STARTED
       }
