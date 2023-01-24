@@ -20,6 +20,10 @@
   <string name="courts_empty">No courts yet.</string>
   <string name="courts_title">Courts</string>
   <string name="drawer_closed">Drawer Closed</string>
+  <string name="end_session_cancel">Cancel</string>
+  <string name="end_session_end">End Session</string>
+  <string name="end_session_message">End session and delete all court and player data?</string>
+  <string name="end_session_title">End Session</string>
   <string name="drawer_item_content_description">View Icon</string>
   <string name="drawer_open">Drawer Open</string>
   <string name="player_court_header">Court</string>
@@ -42,6 +46,7 @@
   <string name="reservation_starts_at">at %1$s</string>
   <string name="reservation_time_remaining">%1$s minutes remaining</string>
   <string name="version_name">Version %1$s</string>
+
 
   <string-array name="zodiac_animals">
     <item>cat</item>

@@ -7,11 +7,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.cerridan.badmintonscheduler.dialog.EndSessionFragment
 import com.cerridan.badmintonscheduler.fragment.CourtsFragment
 import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor
 import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor.COURTS
@@ -20,6 +22,7 @@ import com.cerridan.badmintonscheduler.fragment.PlayersFragment
 import com.cerridan.badmintonscheduler.ui.AppTheme
 import com.cerridan.badmintonscheduler.ui.DrawerItem
 import com.cerridan.badmintonscheduler.ui.VersionItem
+import com.cerridan.badmintonscheduler.util.KEY_BACKSTACK
 
 class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,9 +46,9 @@ class MainActivity : AppCompatActivity() {
 
     drawer.setContent {
       AppTheme {
-        LazyColumn {
-          item { VersionItem(version = BuildConfig.VERSION_NAME) }
-          items(DrawerNavigableFragmentDescriptor.values()) {
+        Column {
+          VersionItem(version = BuildConfig.VERSION_NAME)
+          DrawerNavigableFragmentDescriptor.values().forEach {
             DrawerItem(
                 modifier = Modifier.clickable {
                   supportFragmentManager.beginTransaction()
@@ -59,6 +62,12 @@ class MainActivity : AppCompatActivity() {
                 textRes = it.label
             )
           }
+          Spacer(Modifier.weight(1f))
+          DrawerItem(
+            modifier = Modifier.clickable { showDialog(EndSessionFragment()) },
+            iconRes = R.drawable.icon_end_session,
+            textRes = R.string.end_session_title
+          )
         }
       }
     }
@@ -67,6 +76,10 @@ class MainActivity : AppCompatActivity() {
         .add(R.id.fl_main_fragment_container, CourtsFragment())
         .commit()
   }
+
+  internal fun showDialog(dialog: DialogFragment, source: Fragment? = null) = supportFragmentManager
+    .let { dialog.show(it.beginTransaction().addToBackStack(null), null) }
+    .let { source?.arguments = (source?.arguments ?: Bundle()).apply { putInt(KEY_BACKSTACK, it) } }
 
   override fun onBackPressed() = with(supportFragmentManager) {
     when {

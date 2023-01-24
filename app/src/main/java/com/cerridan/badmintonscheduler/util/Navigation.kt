@@ -11,7 +11,7 @@ import com.cerridan.badmintonscheduler.R
 import io.reactivex.rxjava3.android.MainThreadDisposable
 import io.reactivex.rxjava3.core.Observable
 
-private const val KEY_BACKSTACK = "dialog/backstack_key"
+internal const val KEY_BACKSTACK = "dialog/backstack_key"
 
 private val Fragment.backstackId get() = arguments?.getInt(KEY_BACKSTACK, -1) ?: -1
 
@@ -25,11 +25,8 @@ fun Fragment.push(fragment: Fragment) = (activity as? MainActivity)
     ?.let { arguments = (arguments ?: Bundle()).apply { putInt(KEY_BACKSTACK, it) } }
     ?: Unit
 
-fun Fragment.showDialog(dialog: DialogFragment) = (activity as? MainActivity)
-    ?.supportFragmentManager
-    ?.let { dialog.show(it.beginTransaction().addToBackStack(null), null) }
-    ?.let { arguments = (arguments ?: Bundle()).apply { putInt(KEY_BACKSTACK, it) } }
-    ?: Unit
+fun Fragment.showDialog(dialog: DialogFragment) =
+  (activity as? MainActivity)?.showDialog(dialog, this)
 
 fun Fragment.replace(fragment: Fragment) = (activity as? MainActivity)
     ?.supportFragmentManager
