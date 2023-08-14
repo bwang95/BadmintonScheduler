@@ -6,8 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.cerridan.badmintonscheduler.api.model.Reservation
 import com.cerridan.badmintonscheduler.manager.ReservationManager
 import com.cerridan.badmintonscheduler.util.SingleUseEvent

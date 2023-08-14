@@ -37,9 +37,6 @@ interface BadmintonAPI {
   fun removePlayer(@Path("id") name: String): Single<GenericResponse>
 
   // Session
-  @POST("sessions")
-  fun startSession(@Body request: Any): Single<GenericResponse>
-
   @DELETE("sessions/1")
   fun endSession(): Single<GenericResponse>
 }

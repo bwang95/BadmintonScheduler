@@ -4,8 +4,6 @@
   <string name="add_player_cancel">Cancel</string>
   <string name="add_player_hint_name">Name</string>
   <string name="add_player_hint_password">Password</string>
-  <string name="add_player_name_error">Name cannot be blank</string>
-  <string name="add_player_password_error">Must be a zodiac animal</string>
   <string name="add_player_title">Add Player</string>
   <string name="app_name">Badminton Scheduler</string>
   <string name="court_actions_cancel">Cancel</string>
@@ -36,13 +34,9 @@
   <string name="remove_player_message">Remove player %1$s?</string>
   <string name="remove_player_title">Remove Player</string>
   <string name="reservation_court_number">Court #</string>
-  <string name="reservation_court_number_error">Court Number cannot be blank</string>
-  <string name="reservation_court_number_hint">000</string>
   <string name="reservation_delay_time">Delay (min)</string>
   <string name="reservation_players_empty">No available players!</string>
-  <string name="reservation_players_error">You must select at least one player.</string>
   <string name="reservation_register">Register</string>
-  <string name="reservation_randoms">Random Players</string>
   <string name="reservation_starts_at">at %1$s</string>
   <string name="reservation_time_remaining">%1$s minutes remaining</string>
   <string name="version_name">Version %1$s</string>

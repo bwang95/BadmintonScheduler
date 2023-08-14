@@ -4,9 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.cerridan.badmintonscheduler.database.model.ReservationEntity
-import java.util.Date
 
 @Dao
 interface ReservationDAO {

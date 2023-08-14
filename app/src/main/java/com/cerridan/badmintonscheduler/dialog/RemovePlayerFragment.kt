@@ -1,11 +1,10 @@
 package com.cerridan.badmintonscheduler.dialog
 
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.appcompat.app.AlertDialog
 import com.cerridan.badmintonscheduler.R
-import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.manager.PlayerManager
 import javax.inject.Inject

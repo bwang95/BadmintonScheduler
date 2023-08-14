@@ -29,7 +29,7 @@ import javax.inject.Singleton
 
 @Module
 class AppModule(private val app: Application) {
-  @Provides @Singleton fun provideMoshi() =
+  @Provides @Singleton fun provideMoshi(): Moshi =
       Moshi.Builder()
           .add(KotlinJsonAdapterFactory())
           .add(Date::class.java, UnixDateAdapter())
@@ -43,7 +43,7 @@ class AppModule(private val app: Application) {
           )
           .build()
 
-  @Provides @Singleton fun provideRetrofit(moshi: Moshi, client: OkHttpClient) =
+  @Provides @Singleton fun provideRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit =
       Retrofit.Builder()
           .baseUrl(app.getString(R.string.api_base_url))
           .client(client)
@@ -51,7 +51,7 @@ class AppModule(private val app: Application) {
           .addConverterFactory(MoshiConverterFactory.create(moshi))
           .build()
 
-  @Provides @Singleton fun provideBadmintonApi(retrofit: Retrofit) =
+  @Provides @Singleton fun provideBadmintonApi(retrofit: Retrofit): BadmintonAPI =
       retrofit.create(BadmintonAPI::class.java)
 
   @Provides @Singleton fun provideBadmintonService(retrofit: Retrofit, api: BadmintonAPI) =

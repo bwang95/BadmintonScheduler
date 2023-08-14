@@ -1,10 +1,7 @@
 package com.cerridan.badmintonscheduler.api
 
 import com.cerridan.badmintonscheduler.api.model.Player
-import com.cerridan.badmintonscheduler.api.request.CourtNumberRequest
-import com.cerridan.badmintonscheduler.api.request.DeletePlayerRequest
 import com.cerridan.badmintonscheduler.api.request.RegisterCourtRequest
-import com.cerridan.badmintonscheduler.api.request.UnregisterCourtRequest
 import com.cerridan.badmintonscheduler.api.response.CourtsResponse
 import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.api.response.PlayersResponse
@@ -69,10 +66,6 @@ class BadmintonService(
       .handleErrorsOnMainThread(::GenericResponse)
 
   // Session
-  fun startSession() = api
-      .startSession(Any())
-      .handleErrorsOnMainThread(::GenericResponse)
-
   fun endSession() = api
       .endSession()
       .handleErrorsOnMainThread(::GenericResponse)

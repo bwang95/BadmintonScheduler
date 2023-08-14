@@ -16,7 +16,6 @@ import com.cerridan.badmintonscheduler.util.formatTime
 import com.cerridan.badmintonscheduler.viewmodel.CourtsViewModel.Court
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 @Composable
 fun CourtItem(
