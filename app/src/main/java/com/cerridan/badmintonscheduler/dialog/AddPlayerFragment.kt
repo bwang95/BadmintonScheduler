@@ -81,7 +81,7 @@ class AddPlayerFragment : BaseAlertDialogFragment() {
 
     positiveButtonClicks
         .filter { isCancelable }
-        .map { nameView.text.toString().toLowerCase() to passwordSpinner.selectedItemPosition }
+        .map { nameView.text.toString().lowercase() to passwordSpinner.selectedItemPosition }
         .switchMapSingle { (name, position) ->
           playerManager.addPlayer(Player(name, adapter.getItem(position)))
               .doOnSubscribe { progressSubject.onNext(true) }

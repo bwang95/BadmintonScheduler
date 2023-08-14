@@ -19,7 +19,7 @@ class BadmintonService(
     private val retrofit: Retrofit,
     private val api: BadmintonAPI
 ) {
-  private fun <T> Single<T>.handleErrorsOnMainThread(onErrorReturn: (Throwable) -> T): Single<T> =
+  private fun <T : Any> Single<T>.handleErrorsOnMainThread(onErrorReturn: (Throwable) -> T): Single<T> =
       this
           .subscribeOn(io())
           .onErrorReturn { throwable ->

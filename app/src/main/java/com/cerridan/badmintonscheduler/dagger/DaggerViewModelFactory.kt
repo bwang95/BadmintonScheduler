@@ -21,6 +21,7 @@ class DaggerViewModelFactory @Inject constructor(
   )
 
   override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    @Suppress("UNCHECKED_CAST")
     return (providers[modelClass]?.get() as? T)
         ?: throw IllegalArgumentException("${modelClass.name} not provided in DaggerViewModelFactory")
   }
