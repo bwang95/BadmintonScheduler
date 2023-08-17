@@ -18,9 +18,13 @@ class PlayersViewModel @Inject constructor(
 
   var players by mutableStateOf<List<Player>?>(null)
     private set
+  var isLoading by mutableStateOf(false)
+    private set
 
-  fun refresh() {
-    playerManager.getPlayers()
+  fun refresh(forceUpdate: Boolean = false) {
+    playerManager.getPlayers(forceUpdate)
+        .doOnSubscribe { isLoading = true }
+        .doOnEvent { _, _ -> isLoading = false }
         .subscribe { (error, players) ->
           this.players = players
           if (error.isNotBlank()) mutableErrors.postValue(SingleUseEvent(error))

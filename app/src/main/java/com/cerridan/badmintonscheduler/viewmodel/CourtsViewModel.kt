@@ -22,12 +22,16 @@ class CourtsViewModel @Inject constructor(
 
   var courts by mutableStateOf<List<Court>?>(null)
     private set
+  var isLoading by mutableStateOf(false)
+    private set
 
   private val mutableErrors = MutableLiveData<SingleUseEvent<String>>()
   val errors: LiveData<SingleUseEvent<String>> = mutableErrors
 
-  fun refresh() {
-    manager.getReservations()
+  fun refresh(forceUpdate: Boolean = false) {
+    manager.getReservations(forceUpdate)
+        .doOnSubscribe { isLoading = true }
+        .doOnEvent { _, _ -> isLoading = false }
         .subscribe { (error, reservations) ->
           this.courts = reservations
               .sortedBy(Reservation::startsAt)
