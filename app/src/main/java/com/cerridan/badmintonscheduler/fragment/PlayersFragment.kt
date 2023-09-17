@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
@@ -41,14 +42,15 @@ import com.cerridan.badmintonscheduler.dialog.AddPlayerFragment
 import com.cerridan.badmintonscheduler.dialog.RemovePlayerFragment
 import com.cerridan.badmintonscheduler.ui.PlayerItem
 import com.cerridan.badmintonscheduler.util.GlobalPadding
-import com.cerridan.badmintonscheduler.util.observableForegroundBackstackState
+import com.cerridan.badmintonscheduler.util.backstackForegroundState
 import com.cerridan.badmintonscheduler.util.showDialog
 import com.cerridan.badmintonscheduler.viewmodel.PlayersViewModel
-import io.reactivex.rxjava3.disposables.SerialDisposable
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
-  private val foregroundDisposable = SerialDisposable()
   override val viewModel: PlayersViewModel by viewModels {
     DaggerInjector.appComponent.viewModelFactory()
   }
@@ -56,10 +58,12 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    observableForegroundBackstackState
-        .delay(250L, TimeUnit.MILLISECONDS)
-        .subscribe { viewModel.refresh() }
-        .let(foregroundDisposable::set)
+    lifecycleScope.launch {
+      backstackForegroundState
+        .onEach { delay(250L) }
+        .filter { it }
+        .collect { viewModel.refresh() }
+    }
 
     viewModel.errors.observe(viewLifecycleOwner) { event ->
       event.value?.let { Toast.makeText(view.context, it, LENGTH_LONG).show() }
@@ -147,11 +151,6 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
         state = pullRefreshState
       )
     }
-  }
-
-  override fun onDestroyView() {
-    foregroundDisposable.set(null)
-    super.onDestroyView()
   }
 
   override fun onResume() {

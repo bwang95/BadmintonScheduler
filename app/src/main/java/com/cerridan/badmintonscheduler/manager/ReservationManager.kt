@@ -4,11 +4,8 @@ import androidx.annotation.WorkerThread
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.api.model.Reservation
-import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.database.dao.ReservationDAO
 import com.cerridan.badmintonscheduler.database.model.ReservationEntity
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
@@ -26,39 +23,44 @@ class ReservationManager @Inject constructor(
 
   private var lastUpdate = AtomicReference(Date(0))
 
-  fun getReservations(forceUpdate: Boolean = false): Single<Pair<String, List<Reservation>>> = Single
-      .fromCallable { Date(reservationDao.getEarliestReservationEndTime() ?: 0) }
-      .flatMap { expiration ->
-        val now = Date()
-        if (forceUpdate || expiration < now || lastUpdate.get() < Date(now.time - UPDATE_INTERVAL_MILLIS)) {
-          badmintonService.getCourts()
-              .observeOn(Schedulers.io())
-              .doOnSuccess { lastUpdate.set(now) }
-              .map {
-                updateReservationDatabase(it.courts ?: emptyList())
-                (it.error ?: "") to reservationDao.getReservations()
-              }
-        } else {
-          Single.just("" to reservationDao.getReservations())
-        }
-      }
-      .map { (error, reservations) -> error to reservations.map(ReservationEntity::reservation) }
-      .subscribeOn(Schedulers.io())
+  suspend fun getReservations(forceUpdate: Boolean = false): Pair<String, List<Reservation>> {
+    val now = Date()
+    val expiration = Date(reservationDao.getEarliestReservationEndTime() ?: 0)
+    val updateTime = Date(now.time - UPDATE_INTERVAL_MILLIS)
 
-  fun resetCourt(courtNumber: String): Single<String> = badmintonService
-      .resetCourt(courtNumber)
-      .doOnSuccess { setShouldUpdate() }
-      .map { it.error ?: "" }
+    val error = if (forceUpdate || expiration < now || lastUpdate.get() < updateTime) {
+      val response = badmintonService.getCourts()
+      lastUpdate.set(now)
+      updateReservationDatabase(response.courts ?: emptyList())
+      response.error ?: ""
+    } else {
+      ""
+    }
 
-  fun createReservation(courtNumber: Int, players: List<Player>, delayMinutes: Int) =
-    badmintonService
-        .registerCourt(courtNumber, players, delayMinutes)
-        .doOnSuccess { setShouldUpdate() }
+    return error to reservationDao.getReservations().map(ReservationEntity::reservation)
+  }
 
-  fun deleteReservation(token: String): Single<String> = badmintonService
-      .unregisterCourt(token)
-      .doOnSuccess { setShouldUpdate() }
-      .map { it.error ?: "" }
+  suspend fun resetCourt(courtNumber: String): String {
+    val response = badmintonService.resetCourt(courtNumber)
+    setShouldUpdate()
+    return response.error ?: ""
+  }
+
+  suspend fun createReservation(
+    courtNumber: Int,
+    players: List<Player>,
+    delayMinutes: Int
+  ): String {
+    val response = badmintonService.registerCourt(courtNumber, players, delayMinutes)
+    setShouldUpdate()
+    return response.error ?: ""
+  }
+
+  suspend fun deleteReservation(token: String): String {
+    val response = badmintonService.unregisterCourt(token)
+    setShouldUpdate()
+    return response.error ?: ""
+  }
 
   fun setShouldUpdate() {
     playerManager.setShouldUpdate()

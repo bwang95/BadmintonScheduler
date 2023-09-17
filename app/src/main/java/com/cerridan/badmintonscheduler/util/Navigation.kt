@@ -8,8 +8,9 @@ import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.FragmentTransaction
 import com.cerridan.badmintonscheduler.MainActivity
 import com.cerridan.badmintonscheduler.R
-import io.reactivex.rxjava3.android.MainThreadDisposable
-import io.reactivex.rxjava3.core.Observable
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 internal const val KEY_BACKSTACK = "dialog/backstack_key"
 
@@ -28,29 +29,20 @@ fun Fragment.push(fragment: Fragment) = (activity as? MainActivity)
 fun Fragment.showDialog(dialog: DialogFragment) =
   (activity as? MainActivity)?.showDialog(dialog, this)
 
-fun Fragment.replace(fragment: Fragment) = (activity as? MainActivity)
-    ?.supportFragmentManager
-    ?.beginTransaction()
-    ?.replace(R.id.fl_main_fragment_container, fragment)
-    ?.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-    ?.commit()
-    ?: Unit
-
-val Fragment.observableForegroundBackstackState: Observable<Boolean>
-  get() = Observable.create { emitter ->
+val Fragment.backstackForegroundState: Flow<Boolean>
+  get() = callbackFlow {
     val fragmentManager = (activity as? MainActivity)
-        ?.supportFragmentManager
-        ?: run {
-          emitter.onComplete()
-          return@create
-        }
+      ?.supportFragmentManager
+      ?: return@callbackFlow
 
     val listener = OnBackStackChangedListener {
       val entriesSize = fragmentManager.backStackEntryCount
-      emitter.onNext(entriesSize == 0 || fragmentManager.getBackStackEntryAt(entriesSize - 1).id == backstackId)
+      trySend(entriesSize == 0 || fragmentManager.getBackStackEntryAt(entriesSize - 1).id == backstackId)
     }
+
     fragmentManager.addOnBackStackChangedListener(listener)
-    emitter.setDisposable(object : MainThreadDisposable() {
-      override fun onDispose() = fragmentManager.removeOnBackStackChangedListener(listener)
-    })
+
+    awaitClose {
+      fragmentManager.removeOnBackStackChangedListener(listener)
+    }
   }

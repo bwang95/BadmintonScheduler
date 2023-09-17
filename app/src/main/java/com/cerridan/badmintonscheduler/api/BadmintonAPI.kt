@@ -5,7 +5,6 @@ import com.cerridan.badmintonscheduler.api.request.RegisterCourtRequest
 import com.cerridan.badmintonscheduler.api.response.CourtsResponse
 import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.api.response.PlayersResponse
-import io.reactivex.rxjava3.core.Single
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -15,28 +14,28 @@ import retrofit2.http.Path
 interface BadmintonAPI {
   // Courts
   @GET("courts")
-  fun getCourts(): Single<CourtsResponse>
+  suspend fun getCourts(): CourtsResponse
 
   @POST("courts")
-  fun registerCourt(@Body request: RegisterCourtRequest): Single<GenericResponse>
+  suspend fun registerCourt(@Body request: RegisterCourtRequest): GenericResponse
 
   @DELETE("courts/reset/{id}")
-  fun resetCourt(@Path("id") courtNumber: String): Single<GenericResponse>
+  suspend fun resetCourt(@Path("id") courtNumber: String): GenericResponse
 
   @DELETE("courts/{id}")
-  fun unregisterCourt(@Path("id") reservationToken: String): Single<GenericResponse>
+  suspend fun unregisterCourt(@Path("id") reservationToken: String): GenericResponse
 
   // Players
   @GET("users")
-  fun getPlayers(): Single<PlayersResponse>
+  suspend fun getPlayers(): PlayersResponse
 
   @POST("users")
-  fun addPlayer(@Body request: Player): Single<GenericResponse>
+  suspend fun addPlayer(@Body request: Player): GenericResponse
 
   @DELETE("users/{id}")
-  fun removePlayer(@Path("id") name: String): Single<GenericResponse>
+  suspend fun removePlayer(@Path("id") name: String): GenericResponse
 
   // Session
   @DELETE("sessions/1")
-  fun endSession(): Single<GenericResponse>
+  suspend fun endSession(): GenericResponse
 }

@@ -1,10 +1,12 @@
 package com.cerridan.badmintonscheduler.database.model
 
+import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.cerridan.badmintonscheduler.api.model.Player
 
+@Immutable
 @Entity(tableName = "players")
 class PlayerEntity(
     @PrimaryKey @ColumnInfo(name = "name", index = true) val name: String,

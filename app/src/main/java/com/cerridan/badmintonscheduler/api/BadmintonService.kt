@@ -5,9 +5,6 @@ import com.cerridan.badmintonscheduler.api.request.RegisterCourtRequest
 import com.cerridan.badmintonscheduler.api.response.CourtsResponse
 import com.cerridan.badmintonscheduler.api.response.GenericResponse
 import com.cerridan.badmintonscheduler.api.response.PlayersResponse
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers.io
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import java.io.IOException
@@ -16,57 +13,49 @@ class BadmintonService(
     private val retrofit: Retrofit,
     private val api: BadmintonAPI
 ) {
-  private fun <T : Any> Single<T>.handleErrorsOnMainThread(onErrorReturn: (Throwable) -> T): Single<T> =
-      this
-          .subscribeOn(io())
-          .onErrorReturn { throwable ->
-            val converter = retrofit.responseBodyConverter<GenericResponse>(GenericResponse::class.java, arrayOf())
-            val transmuted = try {
-              (throwable as? HttpException)
-                  ?.response()
-                  ?.errorBody()
-                  ?.let { converter.convert(it)?.error?.let(::Exception) }
-                  ?: throwable
-            } catch (e: IOException) {
-              throwable
-            }
+  private suspend fun <T> callAndConvertErrors(
+    output: (Throwable) -> T,
+    call: suspend () -> T
+  ): T = try {
+    call()
+  } catch(throwable: Throwable) {
+    val converter = retrofit.responseBodyConverter<GenericResponse>(GenericResponse::class.java, arrayOf())
+    val transmuted = try {
+      (throwable as? HttpException)
+        ?.response()
+        ?.errorBody()
+        ?.let { converter.convert(it)?.error?.let(::Exception) }
+        ?: throwable
+    } catch (e: IOException) {
+      throwable
+    }
 
-            onErrorReturn(transmuted)
-          }
-          .observeOn(mainThread())
+    output(transmuted)
+  }
 
   // Courts
-  fun getCourts() = api
-      .getCourts()
-      .handleErrorsOnMainThread(::CourtsResponse)
+  suspend fun getCourts() = callAndConvertErrors(::CourtsResponse, api::getCourts)
 
-  fun registerCourt(courtNumber: Int, players: List<Player>, delayMinutes: Int) = api
-      .registerCourt(RegisterCourtRequest(courtNumber, players.map(Player::name), delayMinutes))
-      .handleErrorsOnMainThread(::GenericResponse)
+  suspend fun registerCourt(courtNumber: Int, players: List<Player>, delayMinutes: Int) =
+    callAndConvertErrors(::GenericResponse) {
+      api.registerCourt(RegisterCourtRequest(courtNumber, players.map(Player::name), delayMinutes))
+    }
 
-  fun unregisterCourt(reservationToken: String) = api
-      .unregisterCourt(reservationToken)
-      .handleErrorsOnMainThread(::GenericResponse)
+  suspend fun unregisterCourt(reservationToken: String) =
+    callAndConvertErrors(::GenericResponse) { api.unregisterCourt(reservationToken) }
 
-  fun resetCourt(courtNumber: String) = api
-      .resetCourt(courtNumber)
-      .handleErrorsOnMainThread(::GenericResponse)
+  suspend fun resetCourt(courtNumber: String) =
+    callAndConvertErrors(::GenericResponse) { api.resetCourt(courtNumber) }
 
   // Players
-  fun getPlayers() = api
-      .getPlayers()
-      .handleErrorsOnMainThread(::PlayersResponse)
+  suspend fun getPlayers() = callAndConvertErrors(::PlayersResponse, api::getPlayers)
 
-  fun addPlayer(player: Player) = api
-      .addPlayer(player)
-      .handleErrorsOnMainThread(::GenericResponse)
+  suspend fun addPlayer(player: Player) =
+    callAndConvertErrors(::GenericResponse) { api.addPlayer(player) }
 
-  fun removePlayer(name: String) = api
-      .removePlayer(name)
-      .handleErrorsOnMainThread(::GenericResponse)
+  suspend fun removePlayer(name: String) =
+    callAndConvertErrors(::GenericResponse) { api.removePlayer(name) }
 
   // Session
-  fun endSession() = api
-      .endSession()
-      .handleErrorsOnMainThread(::GenericResponse)
+  suspend fun endSession() = callAndConvertErrors(::GenericResponse, api::endSession)
 }

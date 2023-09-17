@@ -7,13 +7,15 @@ import androidx.appcompat.app.AlertDialog
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.manager.SessionManager
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class EndSessionFragment : BaseAlertDialogFragment() {
   @Inject lateinit var sessionManager: SessionManager
-
-  private val progressSubject = BehaviorSubject.createDefault(false)
 
   init {
     DaggerInjector.appComponent.inject(this)
@@ -28,26 +30,29 @@ class EndSessionFragment : BaseAlertDialogFragment() {
     .setNegativeButton(R.string.end_session_cancel, null)
     .create()
 
-  override fun onResume(dialog: AlertDialog) {
-    positiveButtonClicks
-      .filter { isCancelable }
-      .switchMapSingle {
-        sessionManager.endSession()
-          .doOnSubscribe { progressSubject.onNext(true) }
-      }
-      .subscribe {
-        progressSubject.onNext(false)
-        if (it.isBlank()) {
-          dismiss()
-        } else {
-          Toast.makeText(requireContext(), it, LENGTH_LONG).show()
+  override fun onStart(dialog: AlertDialog) {
+    dialogScope.launch {
+      positiveButtonClicks
+        .filter { isCancelable }
+        .map {
+          isCancelable = false
+          sessionManager.endSession()
         }
-      }
-      .disposeOnPause()
+        .flowOn(Dispatchers.IO)
+        .collect { error ->
+          isCancelable = true
+          if (error.isBlank()) {
+            dismiss()
+          } else {
+            Toast.makeText(requireContext(), error, LENGTH_LONG).show()
+          }
+        }
+    }
 
-    negativeButtonClicks
-      .filter { isCancelable }
-      .subscribe { dismiss() }
-      .disposeOnPause()
+    dialogScope.launch {
+      negativeButtonClicks
+        .filter { isCancelable }
+        .collect { dismiss() }
+    }
   }
 }

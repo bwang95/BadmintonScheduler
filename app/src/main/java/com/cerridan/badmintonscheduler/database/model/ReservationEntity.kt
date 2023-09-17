@@ -1,11 +1,13 @@
 package com.cerridan.badmintonscheduler.database.model
 
+import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.cerridan.badmintonscheduler.api.model.Reservation
 import java.util.Date
 
+@Immutable
 @Entity(tableName = "reservations")
 class ReservationEntity(
     @PrimaryKey @ColumnInfo(name = "id") val id: String,
@@ -30,6 +32,4 @@ class ReservationEntity(
         startsAt = reservation.startsAt.time,
         endsAt = reservation.endsAt.time
     )
-
-    val randoms: Boolean get() = playerNames.isEmpty()
 }

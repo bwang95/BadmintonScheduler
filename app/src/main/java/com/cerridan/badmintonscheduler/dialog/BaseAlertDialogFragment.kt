@@ -5,43 +5,58 @@ import android.content.DialogInterface.BUTTON_NEUTRAL
 import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
 import android.widget.Button
-import androidx.fragment.app.DialogFragment
 import androidx.appcompat.app.AlertDialog
-import com.jakewharton.rxbinding4.view.clicks
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
+import androidx.fragment.app.DialogFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 
 abstract class BaseAlertDialogFragment : DialogFragment() {
+  protected val dialogScope = CoroutineScope(Dispatchers.Main)
+
   protected val positiveButton: Button by lazy { (dialog as AlertDialog).getButton(BUTTON_POSITIVE) }
 
   protected val neutralButton: Button by lazy { (dialog as AlertDialog).getButton(BUTTON_NEUTRAL) }
 
   protected val negativeButton: Button by lazy { (dialog as AlertDialog).getButton(BUTTON_NEGATIVE) }
 
-  protected val positiveButtonClicks get() = positiveButton.clicks()
+  protected val positiveButtonClicks by lazy {
+    callbackFlow {
+      positiveButton.setOnClickListener { trySend(Unit) }
+      awaitClose { positiveButton.setOnClickListener(null) }
+    }
+  }
 
-  protected val neutralButtonClicks get() = neutralButton.clicks()
+  protected val neutralButtonClicks by lazy {
+    callbackFlow {
+      neutralButton.setOnClickListener { trySend(Unit) }
+      awaitClose { neutralButton.setOnClickListener(null) }
+    }
+  }
 
-  protected val negativeButtonClicks get() = negativeButton.clicks()
-
-  private val disposables = CompositeDisposable()
+  protected val negativeButtonClicks by lazy {
+    callbackFlow {
+      negativeButton.setOnClickListener { trySend(Unit) }
+      awaitClose { negativeButton.setOnClickListener(null) }
+    }
+  }
 
   abstract override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog
 
-  final override fun onPause() {
-    onPause(dialog as AlertDialog)
-    disposables.clear()
-    super.onPause()
+  abstract fun onStart(dialog: AlertDialog)
+
+  open fun onStop(dialog: AlertDialog) = Unit
+
+  final override fun onStart() {
+    super.onStart()
+    onStart(dialog as AlertDialog)
   }
 
-  final override fun onResume() {
-    super.onResume()
-    onResume(dialog as AlertDialog)
+  final override fun onStop() {
+    onStop(dialog as AlertDialog)
+    dialogScope.cancel()
+    super.onStop()
   }
-
-  open fun onPause(dialog: AlertDialog) = Unit
-
-  abstract fun onResume(dialog: AlertDialog)
-
-  protected fun Disposable.disposeOnPause() { if (isResumed) disposables.add(this) else dispose() }
 }

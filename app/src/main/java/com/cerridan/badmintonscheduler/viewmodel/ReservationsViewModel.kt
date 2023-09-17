@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.manager.PlayerManager
 import com.cerridan.badmintonscheduler.manager.ReservationManager
@@ -12,12 +14,14 @@ import com.cerridan.badmintonscheduler.util.SingleUseEvent
 import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.IN_PROGRESS
 import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.NOT_STARTED
 import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.SUCCESS
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ReservationsViewModel @Inject constructor(
   private val playerManager: PlayerManager,
   private val reservationManager: ReservationManager
-) : BaseViewModel() {
+) : ViewModel() {
   enum class RequestState { NOT_STARTED, IN_PROGRESS, SUCCESS }
 
   private val mutableErrors = MutableLiveData<SingleUseEvent<String>>()
@@ -29,24 +33,25 @@ class ReservationsViewModel @Inject constructor(
     private set
 
   fun refresh() {
-    playerManager.getPlayers()
-      .doOnSubscribe { requestState = IN_PROGRESS }
-      .subscribe { (error, players) ->
-        this.availablePlayers = players.filter { it.court.isNullOrBlank() }
-        if (error.isNotBlank()) mutableErrors.postValue(SingleUseEvent(error))
-        requestState = NOT_STARTED
-      }
-      .disposeOnClear()
+    viewModelScope.launch(Dispatchers.IO) {
+      requestState = IN_PROGRESS
+
+      val (error, players) = playerManager.getPlayers()
+      availablePlayers = players.filter { it.court.isNullOrBlank() }
+      if (error.isNotBlank()) mutableErrors.postValue(SingleUseEvent(error))
+      requestState = NOT_STARTED
+    }
   }
 
   fun submitReservation(courtNumber: Int, players: List<Player>, delayMinutes: Int) {
-    reservationManager.createReservation(courtNumber, players, delayMinutes)
-      .subscribe { response ->
-        requestState = response.error?.let {
-          mutableErrors.postValue(SingleUseEvent(it))
-          NOT_STARTED
-        } ?: SUCCESS
+    viewModelScope.launch(Dispatchers.IO) {
+      val error = reservationManager.createReservation(courtNumber, players, delayMinutes)
+      requestState = if (error.isNotBlank()) {
+        mutableErrors.postValue(SingleUseEvent(error))
+        NOT_STARTED
+      } else {
+        SUCCESS
       }
-      .disposeOnClear()
+    }
   }
 }

@@ -34,6 +34,9 @@ android {
   }
 
   buildTypes {
+    debug {
+      applicationIdSuffix '.debug'
+    }
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -46,7 +49,7 @@ ext {
   retrofit_version = '2.9.0'
   moshi_version = '1.14.0'
   dagger_version = '2.47'
-  lifecycle_version = '2.6.1'
+  lifecycle_version = '2.6.2'
   room_version = '2.5.2'
 }
 
@@ -72,10 +75,10 @@ dependencies {
 
   // Compose
   implementation 'androidx.activity:activity-compose:1.7.2'
-  implementation 'androidx.compose.material:material:1.5.0'
-  implementation 'androidx.compose.animation:animation:1.5.0'
-  implementation 'androidx.compose.ui:ui-tooling:1.5.0'
-  implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+  implementation 'androidx.compose.material:material:1.5.1'
+  implementation 'androidx.compose.animation:animation:1.5.1'
+  implementation 'androidx.compose.ui:ui-tooling:1.5.1'
+  implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2'
 
   implementation "com.google.dagger:dagger:$dagger_version"
   ksp "com.google.dagger:dagger-compiler:$dagger_version"
@@ -83,12 +86,7 @@ dependencies {
   implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
   implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
   implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-  implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_version"
   implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
   implementation "com.squareup.moshi:moshi:$moshi_version"
   implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
-
-  implementation 'io.reactivex.rxjava3:rxjava:3.0.13-RC4'
-  implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-  implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
 }

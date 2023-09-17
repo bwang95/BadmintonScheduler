@@ -22,7 +22,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import okhttp3.logging.HttpLoggingInterceptor.Level.NONE
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.Date
 import javax.inject.Singleton
@@ -47,7 +46,6 @@ class AppModule(private val app: Application) {
       Retrofit.Builder()
           .baseUrl(app.getString(R.string.api_base_url))
           .client(client)
-          .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
           .addConverterFactory(MoshiConverterFactory.create(moshi))
           .build()
 

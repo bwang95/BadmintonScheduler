@@ -7,6 +7,11 @@ import androidx.appcompat.app.AlertDialog
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.manager.PlayerManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RemovePlayerFragment : BaseAlertDialogFragment() {
@@ -33,28 +38,31 @@ class RemovePlayerFragment : BaseAlertDialogFragment() {
       .setNegativeButton(R.string.remove_player_cancel, null)
       .create()
 
-  override fun onResume(dialog: AlertDialog) {
+  override fun onStart(dialog: AlertDialog) {
     val playerName = arguments?.getString(KEY_PLAYER_NAME)!!
 
-    positiveButtonClicks
+    dialogScope.launch {
+      positiveButtonClicks
         .filter { isCancelable }
-        .switchMapSingle {
+        .map {
+          isCancelable = false
           playerManager.removePlayer(playerName)
-              .doOnSubscribe { isCancelable = false }
         }
-        .subscribe {
+        .flowOn(Dispatchers.IO)
+        .collect { error ->
           isCancelable = true
-          if (it.isNotBlank()) {
-            Toast.makeText(dialog.context, it, LENGTH_LONG).show()
+          if (error.isNotBlank()) {
+            Toast.makeText(dialog.context, error, LENGTH_LONG).show()
           } else {
             dismiss()
           }
         }
-        .disposeOnPause()
+    }
 
-    negativeButtonClicks
+    dialogScope.launch {
+      negativeButtonClicks
         .filter { isCancelable }
-        .subscribe { dismiss() }
-        .disposeOnPause()
+        .collect { dismiss() }
+    }
   }
 }

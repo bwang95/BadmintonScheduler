@@ -6,14 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.cerridan.badmintonscheduler.api.model.Reservation
 import com.cerridan.badmintonscheduler.manager.ReservationManager
 import com.cerridan.badmintonscheduler.util.SingleUseEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CourtsViewModel @Inject constructor(
   private val manager: ReservationManager
-) : BaseViewModel() {
+) : ViewModel() {
   @Immutable
   data class Court(
     val name: String,
@@ -29,17 +33,16 @@ class CourtsViewModel @Inject constructor(
   val errors: LiveData<SingleUseEvent<String>> = mutableErrors
 
   fun refresh(forceUpdate: Boolean = false) {
-    manager.getReservations(forceUpdate)
-        .doOnSubscribe { isLoading = true }
-        .doOnEvent { _, _ -> isLoading = false }
-        .subscribe { (error, reservations) ->
-          this.courts = reservations
-              .sortedBy(Reservation::startsAt)
-              .groupBy(Reservation::court)
-              .toSortedMap()
-              .map { (court, reservations) -> Court(court, reservations) }
-          if (error.isNotBlank()) mutableErrors.postValue(SingleUseEvent(error))
-        }
-        .disposeOnClear()
+    viewModelScope.launch(Dispatchers.IO) {
+      isLoading = true
+      val (error, reservations) = manager.getReservations(forceUpdate)
+      courts = reservations
+        .sortedBy(Reservation::startsAt)
+        .groupBy(Reservation::court)
+        .toSortedMap()
+        .map { (court, reservations) -> Court(court, reservations) }
+      if (error.isNotBlank()) mutableErrors.postValue(SingleUseEvent(error))
+      isLoading = false
+    }
   }
 }

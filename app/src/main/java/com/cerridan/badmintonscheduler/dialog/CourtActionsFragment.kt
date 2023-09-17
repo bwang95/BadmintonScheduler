@@ -1,12 +1,17 @@
 package com.cerridan.badmintonscheduler.dialog
 
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.appcompat.app.AlertDialog
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.manager.ReservationManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CourtActionsFragment : BaseAlertDialogFragment() {
@@ -40,45 +45,49 @@ class CourtActionsFragment : BaseAlertDialogFragment() {
       .setNegativeButton(R.string.court_actions_reset, null)
       .create()
 
-  override fun onResume(dialog: AlertDialog) {
+  override fun onStart(dialog: AlertDialog) {
     val courtNumber = requireArguments().getString(KEY_COURT_NUMBER) ?: ""
     val reservationToken = requireArguments().getString(KEY_RESERVATION_TOKEN) ?: ""
 
-    positiveButtonClicks
+    dialogScope.launch {
+      positiveButtonClicks
         .filter { isCancelable }
-        .switchMapSingle {
+        .map {
+          isCancelable = false
           manager.deleteReservation(reservationToken)
-              .doOnSubscribe { isCancelable = false }
         }
-        .subscribe { error ->
+        .collect { error ->
           error.takeIf(String::isNotBlank)
-              ?.let {
-                Toast.makeText(dialog.context, it, LENGTH_LONG).show()
-                isCancelable = true
-              }
-              ?: dismiss()
+            ?.let {
+              Toast.makeText(dialog.context, it, LENGTH_LONG).show()
+              isCancelable = true
+            }
+            ?: dismiss()
         }
-        .disposeOnPause()
+    }
 
-    negativeButtonClicks
+    dialogScope.launch {
+      negativeButtonClicks
         .filter { isCancelable }
-        .switchMapSingle {
+        .map {
+          isCancelable = false
           manager.resetCourt(courtNumber)
-              .doOnSubscribe { isCancelable = false }
         }
-        .subscribe { error ->
+        .flowOn(Dispatchers.IO)
+        .collect { error ->
           error.takeIf(String::isNotBlank)
-              ?.let {
-                Toast.makeText(dialog.context, it, LENGTH_LONG).show()
-                isCancelable = true
-              }
-              ?: dismiss()
+            ?.let {
+              Toast.makeText(dialog.context, it, LENGTH_LONG).show()
+              isCancelable = true
+            }
+            ?: dismiss()
         }
-        .disposeOnPause()
+    }
 
-    neutralButtonClicks
+    dialogScope.launch {
+      neutralButtonClicks
         .filter { isCancelable }
-        .subscribe { dismiss() }
-        .disposeOnPause()
+        .collect { dismiss() }
+    }
   }
 }
