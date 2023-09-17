@@ -1,5 +1,6 @@
 package com.cerridan.badmintonscheduler.manager
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import com.cerridan.badmintonscheduler.api.BadmintonService
 import com.cerridan.badmintonscheduler.api.model.Player
@@ -34,11 +35,13 @@ class PlayerManager @Inject constructor(
 
   suspend fun getPlayers(forceUpdate: Boolean = false): Pair<String, List<Player>> {
     val error = if (forceUpdate || lastUpdate.get() < Date(Date().time - UPDATE_INTERVAL_MILLIS)) {
+      Log.e("Players", "Refresh Players")
       val response = badmintonService.getPlayers()
       lastUpdate.set(Date())
       response.players?.let(::updatePlayerDatabase)
       response.error ?: ""
     } else {
+      Log.e("Players", "Skip Refresh Players")
       ""
     }
 

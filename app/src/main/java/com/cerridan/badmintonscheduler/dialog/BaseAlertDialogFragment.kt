@@ -11,8 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
 
 abstract class BaseAlertDialogFragment : DialogFragment() {
   protected val dialogScope = CoroutineScope(Dispatchers.Main)
@@ -25,21 +25,21 @@ abstract class BaseAlertDialogFragment : DialogFragment() {
 
   protected val positiveButtonClicks by lazy {
     callbackFlow {
-      positiveButton.setOnClickListener { dialogScope.launch { send(Unit) } }
+      positiveButton.setOnClickListener { trySendBlocking(Unit) }
       awaitClose { positiveButton.setOnClickListener(null) }
     }
   }
 
   protected val neutralButtonClicks by lazy {
     callbackFlow {
-      neutralButton.setOnClickListener { dialogScope.launch { send(Unit) } }
+      neutralButton.setOnClickListener { trySendBlocking(Unit) }
       awaitClose { neutralButton.setOnClickListener(null) }
     }
   }
 
   protected val negativeButtonClicks by lazy {
     callbackFlow {
-      negativeButton.setOnClickListener { dialogScope.launch { send(Unit) } }
+      negativeButton.setOnClickListener { trySendBlocking(Unit) }
       awaitClose { negativeButton.setOnClickListener(null) }
     }
   }

@@ -1,6 +1,7 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
@@ -35,8 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.cerridan.badmintonscheduler.R.drawable
-import com.cerridan.badmintonscheduler.R.string
+import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
 import com.cerridan.badmintonscheduler.dialog.CourtActionsFragment
 import com.cerridan.badmintonscheduler.ui.CourtItem
@@ -64,7 +64,10 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
       backstackForegroundState
         .onEach { delay(250L) }
         .filter { it }
-        .collect { viewModel.refresh() }
+        .collect {
+          Log.e("Courts", "Refresh VM")
+          viewModel.refresh()
+        }
     }
 
     lifecycleScope.launch {
@@ -72,7 +75,6 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
         Toast.makeText(view.context, error, LENGTH_LONG).show()
       }
     }
-
   }
 
   @Composable
@@ -81,7 +83,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
     floatingActionButton = {
       FloatingActionButton(
         onClick = { push(ReservationFragment()) },
-        content = { Icon(painterResource(drawable.icon_add), contentDescription = "Add") }
+        content = { Icon(painterResource(R.drawable.icon_add), contentDescription = "Add") }
       )
     }
   ) {
@@ -116,8 +118,8 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
-          Icon(painterResource(drawable.icon_court), contentDescription = null)
-          Text(stringResource(string.courts_empty))
+          Icon(painterResource(R.drawable.icon_court), contentDescription = null)
+          Text(stringResource(R.string.courts_empty))
         }
 
         else -> LazyColumn(Modifier.fillMaxSize()) {

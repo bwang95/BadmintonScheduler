@@ -1,6 +1,7 @@
 package com.cerridan.badmintonscheduler.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
@@ -59,6 +60,7 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
     super.onViewCreated(view, savedInstanceState)
 
     lifecycleScope.launch {
+      Log.e("Players", "Refresh VM")
       backstackForegroundState
         .onEach { delay(250L) }
         .filter { it }

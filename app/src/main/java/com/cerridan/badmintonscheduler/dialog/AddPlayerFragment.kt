@@ -20,6 +20,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
@@ -57,22 +58,22 @@ class AddPlayerFragment : BaseAlertDialogFragment() {
 
     val inProgress = MutableStateFlow(false)
     val nameChanges = callbackFlow {
-      dialogScope.launch { send("") }
+      trySendBlocking("")
       val watcher = nameView.addTextChangedListener {
-        dialogScope.launch { send(it?.toString() ?: "") }
+        trySendBlocking(it?.toString() ?: "")
       }
       awaitClose { nameView.removeTextChangedListener(watcher) }
     }
     val passwordSelections = callbackFlow {
-      dialogScope.launch { send(-1) }
+      trySendBlocking(-1)
 
       passwordSpinner.onItemSelectedListener = object : OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-          dialogScope.launch { send(position) }
+          trySendBlocking(position)
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
-          dialogScope.launch { send(-1) }
+          trySendBlocking(-1)
         }
       }
       awaitClose { passwordSpinner.onItemSelectedListener = null }
