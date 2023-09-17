@@ -1,8 +1,6 @@
 package com.cerridan.badmintonscheduler
 
 import android.os.Bundle
-import androidx.fragment.app.FragmentTransaction
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -11,8 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.view.WindowCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.cerridan.badmintonscheduler.dialog.EndSessionFragment
 import com.cerridan.badmintonscheduler.fragment.CourtsFragment
 import com.cerridan.badmintonscheduler.fragment.DrawerNavigableFragmentDescriptor
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    WindowCompat.setDecorFitsSystemWindows(window, false)
 
     val toolbar: Toolbar = findViewById(R.id.tb_main_toolbar)
     val drawerLayout: DrawerLayout = findViewById(R.id.dl_main_content)

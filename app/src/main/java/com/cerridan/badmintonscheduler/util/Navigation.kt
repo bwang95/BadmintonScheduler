@@ -6,11 +6,13 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import com.cerridan.badmintonscheduler.MainActivity
 import com.cerridan.badmintonscheduler.R
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 
 internal const val KEY_BACKSTACK = "dialog/backstack_key"
 
@@ -37,7 +39,9 @@ val Fragment.backstackForegroundState: Flow<Boolean>
 
     val listener = OnBackStackChangedListener {
       val entriesSize = fragmentManager.backStackEntryCount
-      trySend(entriesSize == 0 || fragmentManager.getBackStackEntryAt(entriesSize - 1).id == backstackId)
+      lifecycleScope.launch {
+        send(entriesSize == 0 || fragmentManager.getBackStackEntryAt(entriesSize - 1).id == backstackId)
+      }
     }
 
     fragmentManager.addOnBackStackChangedListener(listener)

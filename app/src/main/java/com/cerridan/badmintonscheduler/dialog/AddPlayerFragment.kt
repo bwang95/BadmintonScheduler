@@ -57,19 +57,23 @@ class AddPlayerFragment : BaseAlertDialogFragment() {
 
     val inProgress = MutableStateFlow(false)
     val nameChanges = callbackFlow {
-      trySend("")
-      val watcher = nameView.addTextChangedListener { trySend(it?.toString() ?: "") }
+      dialogScope.launch { send("") }
+      val watcher = nameView.addTextChangedListener {
+        dialogScope.launch { send(it?.toString() ?: "") }
+      }
       awaitClose { nameView.removeTextChangedListener(watcher) }
     }
     val passwordSelections = callbackFlow {
-      trySend(-1)
+      dialogScope.launch { send(-1) }
 
       passwordSpinner.onItemSelectedListener = object : OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-          trySend(position)
+          dialogScope.launch { send(position) }
         }
 
-        override fun onNothingSelected(parent: AdapterView<*>?) { trySend(-1) }
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+          dialogScope.launch { send(-1) }
+        }
       }
       awaitClose { passwordSpinner.onItemSelectedListener = null }
     }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.fragment.app.viewModels
 import com.cerridan.badmintonscheduler.R
@@ -63,6 +65,7 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
   @Composable
   override fun Content() = Column(
     modifier = Modifier
+        .imePadding()
         .fillMaxSize()
         .background(MaterialTheme.colors.background),
     horizontalAlignment = Alignment.CenterHorizontally
@@ -87,7 +90,10 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
     ) {
       TextField(
           modifier = Modifier.weight(0.5f),
-          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+          keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+          ),
           maxLines = 1,
           value = courtNumber,
           label = { Text(stringResource(R.string.reservation_court_number)) },
@@ -96,7 +102,10 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
 
       TextField(
           modifier = Modifier.weight(0.5f),
-          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+          keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.None
+          ),
           maxLines = 1,
           value = delayTime,
           label = { Text(stringResource(R.string.reservation_delay_time)) },
