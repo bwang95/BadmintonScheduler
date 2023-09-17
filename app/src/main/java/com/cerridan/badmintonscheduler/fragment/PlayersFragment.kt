@@ -65,8 +65,10 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
         .collect { viewModel.refresh() }
     }
 
-    viewModel.errors.observe(viewLifecycleOwner) { event ->
-      event.value?.let { Toast.makeText(view.context, it, LENGTH_LONG).show() }
+    lifecycleScope.launch {
+      viewModel.errors.collect { error ->
+        Toast.makeText(view.context, error, LENGTH_LONG).show()
+      }
     }
   }
 

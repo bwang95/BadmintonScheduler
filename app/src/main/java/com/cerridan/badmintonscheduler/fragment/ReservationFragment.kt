@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.cerridan.badmintonscheduler.R
 import com.cerridan.badmintonscheduler.api.model.Player
 import com.cerridan.badmintonscheduler.dagger.DaggerInjector
@@ -47,27 +48,34 @@ import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel
 import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.IN_PROGRESS
 import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.NOT_STARTED
 import com.cerridan.badmintonscheduler.viewmodel.ReservationsViewModel.RequestState.SUCCESS
+import kotlinx.coroutines.launch
 
 class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
   override val viewModel: ReservationsViewModel by viewModels {
     DaggerInjector.appComponent.viewModelFactory()
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?
+  ) {
     super.onViewCreated(view, savedInstanceState)
 
     viewModel.refresh()
-    viewModel.errors.observe(viewLifecycleOwner) { event ->
-      event.value?.let { Toast.makeText(view.context, it, LENGTH_LONG).show() }
+
+    lifecycleScope.launch {
+      viewModel.errors.collect { error ->
+        Toast.makeText(view.context, error, LENGTH_LONG).show()
+      }
     }
   }
 
   @Composable
   override fun Content() = Column(
     modifier = Modifier
-        .imePadding()
-        .fillMaxSize()
-        .background(MaterialTheme.colors.background),
+      .imePadding()
+      .fillMaxSize()
+      .background(MaterialTheme.colors.background),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     var delayTime by remember { mutableStateOf("") }
@@ -82,68 +90,69 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
     }
 
     Row(
-        modifier = Modifier
-            .shadow(GlobalPadding)
-            .background(MaterialTheme.colors.background)
-            .padding(GlobalPadding),
-        horizontalArrangement = Arrangement.spacedBy(GlobalPadding)
+      modifier = Modifier
+        .shadow(GlobalPadding)
+        .background(MaterialTheme.colors.background)
+        .padding(GlobalPadding),
+      horizontalArrangement = Arrangement.spacedBy(GlobalPadding)
     ) {
       TextField(
-          modifier = Modifier.weight(0.5f),
-          keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next
-          ),
-          maxLines = 1,
-          value = courtNumber,
-          label = { Text(stringResource(R.string.reservation_court_number)) },
-          onValueChange = { courtNumber = it }
+        modifier = Modifier.weight(0.5f),
+        keyboardOptions = KeyboardOptions(
+          keyboardType = KeyboardType.Number,
+          imeAction = ImeAction.Next
+        ),
+        maxLines = 1,
+        value = courtNumber,
+        label = { Text(stringResource(R.string.reservation_court_number)) },
+        onValueChange = { courtNumber = it }
       )
 
       TextField(
-          modifier = Modifier.weight(0.5f),
-          keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.None
-          ),
-          maxLines = 1,
-          value = delayTime,
-          label = { Text(stringResource(R.string.reservation_delay_time)) },
-          onValueChange = { delayTime = it }
+        modifier = Modifier.weight(0.5f),
+        keyboardOptions = KeyboardOptions(
+          keyboardType = KeyboardType.Number,
+          imeAction = ImeAction.None
+        ),
+        maxLines = 1,
+        value = delayTime,
+        label = { Text(stringResource(R.string.reservation_delay_time)) },
+        onValueChange = { delayTime = it }
       )
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+      modifier = Modifier
+        .fillMaxWidth()
+        .weight(1f),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center
     ) {
       val availablePlayers = viewModel.availablePlayers
       when {
         viewModel.requestState == IN_PROGRESS -> CircularProgressIndicator()
         availablePlayers.isNullOrEmpty() -> {
           Icon(
-              modifier = Modifier.padding(bottom = GlobalPadding),
-              painter = painterResource(R.drawable.icon_shuttle),
-              contentDescription = null
+            modifier = Modifier.padding(bottom = GlobalPadding),
+            painter = painterResource(R.drawable.icon_shuttle),
+            contentDescription = null
           )
           Text(stringResource(R.string.reservation_players_empty))
         }
+
         else -> LazyColumn(Modifier.fillMaxSize()) {
           items(availablePlayers, key = Player::name) { player ->
             SelectablePlayerItem(
-                name = player.name,
-                password = player.password,
-                checked = selectedPlayers.containsKey(player),
-                onCheckedChanged = { checked ->
-                  if (checked) {
-                    selectedPlayers[player] = Unit
-                  } else {
-                    selectedPlayers.remove(player)
-                  }
+              name = player.name,
+              password = player.password,
+              checked = selectedPlayers.containsKey(player),
+              onCheckedChanged = { checked ->
+                if (checked) {
+                  selectedPlayers[player] = Unit
+                } else {
+                  selectedPlayers.remove(player)
                 }
+              }
             )
 
             Divider()
@@ -153,21 +162,21 @@ class ReservationFragment : BaseComposeFragment<ReservationsViewModel>() {
     }
 
     Button(
-        modifier = Modifier
-            .padding(GlobalPadding)
-            .fillMaxWidth(),
-        enabled = viewModel.requestState == NOT_STARTED && isValidInput,
-        onClick = {
-          viewModel.submitReservation(
-              courtNumber = courtNumber.toInt(),
-              players = selectedPlayers.map { (name, _) -> name },
-              delayMinutes = delayTime
-                  .takeIf(String::isNotBlank)
-                  ?.toInt()
-                  ?: 0
-          )
-        },
-        content = { Text(stringResource(R.string.reservation_register)) }
+      modifier = Modifier
+        .padding(GlobalPadding)
+        .fillMaxWidth(),
+      enabled = viewModel.requestState == NOT_STARTED && isValidInput,
+      onClick = {
+        viewModel.submitReservation(
+          courtNumber = courtNumber.toInt(),
+          players = selectedPlayers.map { (name, _) -> name },
+          delayMinutes = delayTime
+            .takeIf(String::isNotBlank)
+            ?.toInt()
+            ?: 0
+        )
+      },
+      content = { Text(stringResource(R.string.reservation_register)) }
     )
   }
 }
