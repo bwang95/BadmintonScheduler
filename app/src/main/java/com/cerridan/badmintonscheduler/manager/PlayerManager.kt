@@ -35,13 +35,11 @@ class PlayerManager @Inject constructor(
 
   suspend fun getPlayers(forceUpdate: Boolean = false): Pair<String, List<Player>> {
     val error = if (forceUpdate || lastUpdate.get() < Date(Date().time - UPDATE_INTERVAL_MILLIS)) {
-      Log.e("Players", "Refresh Players")
       val response = badmintonService.getPlayers()
       lastUpdate.set(Date())
       response.players?.let(::updatePlayerDatabase)
       response.error ?: ""
     } else {
-      Log.e("Players", "Skip Refresh Players")
       ""
     }
 

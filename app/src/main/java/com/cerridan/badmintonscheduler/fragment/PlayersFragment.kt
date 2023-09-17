@@ -60,7 +60,6 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
     super.onViewCreated(view, savedInstanceState)
 
     lifecycleScope.launch {
-      Log.e("Players", "Refresh VM")
       backstackForegroundState
         .onEach { delay(250L) }
         .filter { it }
