@@ -134,7 +134,7 @@ class PlayersFragment : BaseComposeFragment<PlayersViewModel>() {
 
           LazyColumn {
             items(players, key = Player::name) { player ->
-              Column(Modifier.animateItemPlacement()) {
+              Column(Modifier.animateItem()) {
                 Divider()
                 PlayerItem(
                   name = player.name,

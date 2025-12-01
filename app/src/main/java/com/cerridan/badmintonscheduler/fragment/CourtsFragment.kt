@@ -120,7 +120,7 @@ class CourtsFragment : BaseComposeFragment<CourtsViewModel>() {
 
         else -> LazyColumn(Modifier.fillMaxSize()) {
           items(courts, key = Court::name) { court ->
-            Column(Modifier.animateItemPlacement()) {
+            Column(Modifier.animateItem()) {
               Divider()
               CourtItem(
                 modifier = Modifier.clickable {
