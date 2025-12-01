@@ -5,7 +5,7 @@ buildscript {
         package_name = 'com.cerridan.badmintonscheduler'
         kotlin_version = '2.2.21'
         major_version = 0
-        minor_version = 12
+        minor_version = 13
     }
 
     repositories {
